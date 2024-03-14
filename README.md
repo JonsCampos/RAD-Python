@@ -1,7 +1,6 @@
 Trabalho Python usando RAD
 
-Universidade Estácio de Sá - Campus Nova América
-Turma 3005 - Terça-feira
+Universidade Estácio de Sá - Campus Nova América / Turma 3005 - Terça-feira
 
 Nomes:  Gabriel Fellipe Venâncio de Oliveira (202303535252)
         Jonas Oliveira Silva Campos (202304322741)
