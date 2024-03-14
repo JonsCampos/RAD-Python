@@ -1,1 +1,17 @@
+AULA 1
+QUESTÃO 1 - b) brainstorming
+QUESTÃO 2 - b) RAD (Rapid Application Development)
 
+AULA 2
+QUESTÃO 1 - e) Ter como pré-requisito equipes tecnicamente muito qualificadas
+QUESTÃO 2 - a) A escolha de um framework sempre deve levar em consideração as necessidades do projeto que se deseja implementar. 
+            Portanto essa escolha tem que estar baseada nas bibliotecas, documentação disponível e a linguagem de programação disponibilizadas para desenvolver o projeto
+
+AULA 3
+QUESTÃO 1 - b) Binário e Texto
+QUESTÃO 2 - a) open("nome_arquivo",w)
+
+AULA 4
+QUESTÃO 1 - d) A forma é usando % (percentual), ou { } (chaves)
+QUESTÃO 2 - d) Para abrir um arquivo texto, por exemplo, sempre é necessário verificar se ele não está corrompido antes, pois, caso contrário, pode gerar inconsistência no programa.
+/// REVISÃO RESPOSTAS AULA 4 ///
