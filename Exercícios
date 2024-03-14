@@ -14,4 +14,4 @@ QUESTÃO 2 - a) open("nome_arquivo",w)
 AULA 4
 QUESTÃO 1 - d) A forma é usando % (percentual), ou { } (chaves)
 QUESTÃO 2 - d) Para abrir um arquivo texto, por exemplo, sempre é necessário verificar se ele não está corrompido antes, pois, caso contrário, pode gerar inconsistência no programa.
-/// REVISÃO RESPOSTAS AULA 4 ///
+/// REVISAR RESPOSTAS AULA 4 ///
