@@ -22,7 +22,7 @@ CREATE TABLE Local (
 
 CREATE TABLE Entrada (
     entrada_ID INT PRIMARY KEY AUTO_INCREMENT,
-    data_hora_ent TIMESTAMP,
+    data_hora_ent TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     funcionario_ID INT,
     local_ID INT,
     FOREIGN KEY (funcionario_ID) REFERENCES Funcionario(funcionario_ID),
@@ -31,7 +31,7 @@ CREATE TABLE Entrada (
 
 CREATE TABLE Saida (
     saida_ID INT PRIMARY KEY AUTO_INCREMENT,
-    data_hora_sai TIMESTAMP,
+    data_hora_sai TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     funcionario_ID INT,
     local_ID INT,
     FOREIGN KEY (funcionario_ID) REFERENCES Funcionario(funcionario_ID),
