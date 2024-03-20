@@ -1,4 +1,4 @@
-import psycopg2 as conector
+import sqlite3 as conector
 
 def ins_ent(conexao, cursor):
     id_func = input('Digite o id do funcionário: ')
@@ -6,7 +6,7 @@ def ins_ent(conexao, cursor):
     id_local_ent = input('Digite o id do local: ')
     id_local_ent = id_local_ent.strip()
     comando = '''INSERT INTO entrada (funcionario_ID, local_ID) 
-	VALUES (%s, %s);'''
+	VALUES (?, ?);'''
     cursor.execute(comando, (id_func, id_local_ent))
     confirm = input('Confirmar entrada? [S/N] ')
     if confirm.lower() == 's':
@@ -17,12 +17,12 @@ def ins_ent(conexao, cursor):
         print('Entrada cancelada!')
 
 def list_ent(cursor):
-    comando = '''SELECT e.entrada_ID, f.nome, s.nome_setor, l.nome_local, TO_CHAR(e.data_hora_ent, 'DD/MM/YYYY HH24:MI') 
-    FROM Entrada e
-    JOIN Funcionario f ON e.funcionario_ID = f.funcionario_ID
-    JOIN Setor s ON f.setor_ID = s.setor_ID
-    JOIN Local l ON e.local_ID = l.local_ID
-    ORDER BY e.data_hora_ent DESC;'''
+    comando = '''SELECT e.entrada_ID, f.nome, s.nome_setor, l.nome_local,  strftime('%d/%m/%Y %H:%M', e.data_hora_ent)
+                    FROM Entrada e
+                    JOIN Funcionario f ON e.funcionario_ID = f.funcionario_ID
+                    JOIN Setor s ON f.setor_ID = s.setor_ID
+                    JOIN Local l ON e.local_ID = l.local_ID
+                    ORDER BY e.data_hora_ent DESC;'''
     cursor.execute(comando)
     registros = cursor.fetchall()
     print('\nLista de Entradas')
@@ -35,7 +35,7 @@ def ins_sai(conexao, cursor):
     id_local_sai = input('Digite o id do local: ')
     id_local_sai = id_local_sai.strip()
     comando = '''INSERT INTO saida (funcionario_ID, local_ID) 
-	VALUES (%s, %s);'''
+	VALUES (?, ?);'''
     cursor.execute(comando, (id_func, id_local_sai))
     confirm = input('Confirmar saída? [S/N] ')
     if confirm.lower() == 's':
@@ -46,12 +46,12 @@ def ins_sai(conexao, cursor):
         print('Saída cancelada!')
 
 def list_sai(cursor):
-    comando = '''SELECT sd.saida_ID, f.nome, st.nome_setor, l.nome_local, TO_CHAR(sd.data_hora_sai, 'DD/MM/YYYY HH24:MI') 
-    FROM Saida sd
-    JOIN Funcionario f ON sd.funcionario_ID = f.funcionario_ID
-    JOIN Setor st ON f.setor_ID = st.setor_ID
-    JOIN Local l ON sd.local_ID = l.local_ID
-    ORDER BY sd.data_hora_sai DESC;'''
+    comando = '''SELECT sd.saida_ID, f.nome, st.nome_setor, l.nome_local, strftime('%d/%m/%Y %H:%M', sd.data_hora_sai) 
+                    FROM Saida sd
+                    JOIN Funcionario f ON sd.funcionario_ID = f.funcionario_ID
+                    JOIN Setor st ON f.setor_ID = st.setor_ID
+                    JOIN Local l ON sd.local_ID = l.local_ID
+                    ORDER BY sd.data_hora_sai DESC;'''
     cursor.execute(comando)
     registros = cursor.fetchall()
     print('\nLista de Saídas')
@@ -59,7 +59,7 @@ def list_sai(cursor):
         print(registro)
 
 
-conexao = conector.connect(database = "python_rad", user="postgres" , password="Jonas" , host="127.0.0.1", port="5432" ) 
+conexao = conector.connect("./banco_rad.db") 
 cursor = conexao.cursor()
 
 opc = int(input('1 - Inserir Entrada | 2 - Listar Entradas | 3 - Inserir Saída | 4 - Listar Saídas\n'))
