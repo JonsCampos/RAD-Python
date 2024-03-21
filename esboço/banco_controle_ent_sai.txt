@@ -1,41 +1,44 @@
-CREATE TABLE Setor (
-    setor_ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-    nome_setor VARCHAR(50) NOT NULL,
-    desc_setor VARCHAR(255) NOT NULL
+CREATE TABLE "Setor" (
+	"setor_ID" INTEGER NOT NULL,
+	"nome_setor" VARCHAR(50) NOT NULL,
+	"desc_setor" VARCHAR(255) NOT NULL,
+	PRIMARY KEY("setor_ID" AUTOINCREMENT)
 );
 
-CREATE TABLE Funcionario (
-    funcionario_ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-    nome VARCHAR(50) NOT NULL,
-    dt_nasc DATE NOT NULL,
-    CPF VARCHAR(14) NOT NULL,
-    telefone VARCHAR(20),
-    email VARCHAR(100),
-    setor_ID INTEGER NOT NULL,
-    FOREIGN KEY (setor_ID) REFERENCES Setor(setor_ID)
+CREATE TABLE "Funcionario" (
+	"funcionario_ID" INTEGER NOT NULL,
+	"nome" VARCHAR(50) NOT NULL,
+	"dt_nasc" DATE NOT NULL,
+	"CPF" VARCHAR(14) NOT NULL,
+	"telefone" VARCHAR(20),
+	"email" VARCHAR(100),
+	"setor_ID" INTEGER NOT NULL,
+	PRIMARY KEY("funcionario_ID" AUTOINCREMENT),
+	FOREIGN KEY("setor_ID") REFERENCES "Setor"("setor_ID")
 );
 
-CREATE TABLE Local (
-    local_ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-    nome_local VARCHAR(50) NOT NULL
+CREATE TABLE "Local" (
+	"local_ID" INTEGER NOT NULL,
+	"nome_local" VARCHAR(50) NOT NULL,
+	PRIMARY KEY("local_ID" AUTOINCREMENT)
 );
 
-CREATE TABLE Entrada (
-    entrada_ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-    data_hora_ent DATETIME DEFAULT (datetime('now', 'localtime')),
-    funcionario_ID INTEGER NOT NULL,
-    local_ID INTEGER NOT NULL,
-    FOREIGN KEY (funcionario_ID) REFERENCES Funcionario(funcionario_ID),
-    FOREIGN KEY (local_ID) REFERENCES Local(local_ID)
+CREATE TABLE "Entrada" (
+	"data_hora_ent"	DATETIME DEFAULT (datetime('now', 'localtime')),
+	"funcionario_ID" INTEGER NOT NULL,
+	"local_ID" INTEGER NOT NULL,
+	PRIMARY KEY("data_hora_ent","funcionario_ID","local_ID"),
+	FOREIGN KEY("funcionario_ID") REFERENCES "Funcionario"("funcionario_ID"),
+	FOREIGN KEY("local_ID") REFERENCES "Local"("local_ID")
 );
 
-CREATE TABLE Saida (
-    saida_ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-    data_hora_sai DATETIME DEFAULT (datetime('now', 'localtime')),
-    funcionario_ID INTEGER,
-    local_ID INTEGER,
-    FOREIGN KEY (funcionario_ID) REFERENCES Funcionario(funcionario_ID),
-    FOREIGN KEY (local_ID) REFERENCES Local(local_ID)
+CREATE TABLE "Saida" (
+	"data_hora_sai"	DATETIME DEFAULT (datetime('now', 'localtime')),
+	"funcionario_ID" INTEGER NOT NULL,
+	"local_ID" INTEGER NOT NULL,
+	PRIMARY KEY("data_hora_sai","funcionario_ID","local_ID"),
+	FOREIGN KEY("funcionario_ID") REFERENCES "Funcionario"("funcionario_ID"),
+	FOREIGN KEY("local_ID") REFERENCES "Local"("local_ID")
 );
 
 insert into setor (nome_setor, desc_setor) values ('TI', 'Tecnologia da informação');
@@ -96,7 +99,7 @@ select * from saida;
 
 
 // ENTRADA //
-SELECT e.entrada_ID, f.nome, s.nome_setor, l.nome_local,  strftime('%d/%m/%Y %H:%M', e.data_hora_ent)
+SELECT f.nome, s.nome_setor, l.nome_local,  strftime('%d/%m/%Y %H:%M', e.data_hora_ent)
 FROM Entrada e
 JOIN Funcionario f ON e.funcionario_ID = f.funcionario_ID
 JOIN Setor s ON f.setor_ID = s.setor_ID
@@ -105,7 +108,7 @@ ORDER BY e.data_hora_ent DESC;
 
 
 // SAÍDA //
-SELECT sd.saida_ID, f.nome, st.nome_setor, l.nome_local, strftime('%d/%m/%Y %H:%M', sd.data_hora_sai) 
+SELECT f.nome, st.nome_setor, l.nome_local, strftime('%d/%m/%Y %H:%M', sd.data_hora_sai) 
 FROM Saida sd
 JOIN Funcionario f ON sd.funcionario_ID = f.funcionario_ID
 JOIN Setor st ON f.setor_ID = st.setor_ID

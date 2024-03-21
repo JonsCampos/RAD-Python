@@ -17,12 +17,12 @@ def ins_ent(conexao, cursor):
         print('Entrada cancelada!')
 
 def list_ent(cursor):
-    comando = '''SELECT e.entrada_ID, f.nome, s.nome_setor, l.nome_local,  strftime('%d/%m/%Y %H:%M', e.data_hora_ent)
-                    FROM Entrada e
-                    JOIN Funcionario f ON e.funcionario_ID = f.funcionario_ID
-                    JOIN Setor s ON f.setor_ID = s.setor_ID
-                    JOIN Local l ON e.local_ID = l.local_ID
-                    ORDER BY e.data_hora_ent DESC;'''
+    comando = '''SELECT f.nome, s.nome_setor, l.nome_local,  strftime('%d/%m/%Y %H:%M', e.data_hora_ent)
+                FROM Entrada e
+                JOIN Funcionario f ON e.funcionario_ID = f.funcionario_ID
+                JOIN Setor s ON f.setor_ID = s.setor_ID
+                JOIN Local l ON e.local_ID = l.local_ID
+                ORDER BY e.data_hora_ent DESC;'''
     cursor.execute(comando)
     registros = cursor.fetchall()
     print('\nLista de Entradas')
@@ -46,12 +46,12 @@ def ins_sai(conexao, cursor):
         print('Saída cancelada!')
 
 def list_sai(cursor):
-    comando = '''SELECT sd.saida_ID, f.nome, st.nome_setor, l.nome_local, strftime('%d/%m/%Y %H:%M', sd.data_hora_sai) 
-                    FROM Saida sd
-                    JOIN Funcionario f ON sd.funcionario_ID = f.funcionario_ID
-                    JOIN Setor st ON f.setor_ID = st.setor_ID
-                    JOIN Local l ON sd.local_ID = l.local_ID
-                    ORDER BY sd.data_hora_sai DESC;'''
+    comando = '''SELECT f.nome, st.nome_setor, l.nome_local, strftime('%d/%m/%Y %H:%M', sd.data_hora_sai) 
+                FROM Saida sd
+                JOIN Funcionario f ON sd.funcionario_ID = f.funcionario_ID
+                JOIN Setor st ON f.setor_ID = st.setor_ID
+                JOIN Local l ON sd.local_ID = l.local_ID
+                ORDER BY sd.data_hora_sai DESC;'''
     cursor.execute(comando)
     registros = cursor.fetchall()
     print('\nLista de Saídas')
