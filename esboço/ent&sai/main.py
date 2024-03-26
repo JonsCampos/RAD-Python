@@ -47,14 +47,15 @@ def ins_acesso():
         except conector.Error as erro:
             print('Erro ao conectar-se ao banco de dados:', erro)
         finally:
-            cursor.close()
-            conexao.close()
+            if (conexao):
+                cursor.close()
+                conexao.close()
 
 def list_acesso():      # Treeview
     try:
         conexao = conector.connect('./banco_rad.db') 
         cursor = conexao.cursor()
-        comando = '''SELECT f.nome, s.nome_setor, l.nome_local,  strftime('%d/%m/%Y - %H:%M', a.data_hora), a.tipo
+        comando = '''SELECT f.nome, s.nome_setor, l.nome_local,  strftime('%d/%m/%Y %H:%M', a.data_hora), a.tipo
                     FROM Acesso a
                     JOIN Funcionario f ON a.funcionario_ID = f.funcionario_ID
                     JOIN Setor s ON f.setor_ID = s.setor_ID
@@ -71,8 +72,9 @@ def list_acesso():      # Treeview
     except conector.Error as erro:
         print('Erro ao conectar-se ao banco de dados:', erro)
     finally:
-        cursor.close()
-        conexao.close()
+        if (conexao):
+            cursor.close()
+            conexao.close()
 
 
 opc = int(input('1 - Inserir Acesso | 2 - Listar Acessos\n'))
