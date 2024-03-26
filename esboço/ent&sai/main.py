@@ -54,7 +54,7 @@ def list_acesso():      # Treeview
     try:
         conexao = conector.connect('./banco_rad.db') 
         cursor = conexao.cursor()
-        comando = '''SELECT f.nome, s.nome_setor, l.nome_local,  strftime('%d/%m/%Y %H:%M', a.data_hora), a.tipo
+        comando = '''SELECT f.nome, s.nome_setor, l.nome_local,  strftime('%d/%m/%Y - %H:%M', a.data_hora), a.tipo
                     FROM Acesso a
                     JOIN Funcionario f ON a.funcionario_ID = f.funcionario_ID
                     JOIN Setor s ON f.setor_ID = s.setor_ID
