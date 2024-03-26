@@ -1,7 +1,7 @@
 CREATE TABLE "Setor" (
 	"setor_ID" INTEGER NOT NULL,
 	"nome_setor" VARCHAR(50) NOT NULL,
-	"desc_setor" VARCHAR(255) NOT NULL,
+	"desc_setor" VARCHAR(255),
 	PRIMARY KEY("setor_ID" AUTOINCREMENT)
 );
 
