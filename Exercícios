@@ -14,4 +14,13 @@ QUESTÃO 2 - a) open("nome_arquivo",w)
 AULA 4
 QUESTÃO 1 - d) A forma é usando % (percentual), ou { } (chaves)
 QUESTÃO 2 - d) Para abrir um arquivo texto, por exemplo, sempre é necessário verificar se ele não está corrompido antes, pois, caso contrário, pode gerar inconsistência no programa.
+
+AULA 5
+QUESTÃO 1 - d) O cursor que é instanciado na linha 4 é fundamental para que o programa possa funcionar corretamente.
+QUESTÃO 2 - a) Permite a criação de tabelas e a execução dos comandos de inserção, exclusão, modificação e consulta no banco de dados.
+
+AULA 6
+QUESTÃO 1 - a) import sqlite3 conector = sqlite3.connect("exemplo.db")
+QUESTÃO 2 - d) create
+
 /// REVISAR RESPOSTAS AULA 4 ///
