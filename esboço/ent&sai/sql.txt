@@ -88,7 +88,7 @@ select * from acesso;
 
 
 // ACESSO //
-SELECT f.nome, s.nome_setor, l.nome_local,  strftime('%d/%m/%Y %H:%M', a.data_hora), a.tipo
+SELECT f.nome, s.nome_setor, l.nome_local,  strftime('%d/%m/%Y - %H:%M', a.data_hora), a.tipo
 FROM Acesso a
 JOIN Funcionario f ON a.funcionario_ID = f.funcionario_ID
 JOIN Setor s ON f.setor_ID = s.setor_ID
