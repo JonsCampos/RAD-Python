@@ -1,4 +1,5 @@
 import sqlite3 as conector
+import classes
 
 def verificar_func(id_func, cursor):
     cursor.execute('SELECT COUNT(*) FROM funcionario WHERE funcionario_ID = ?', (id_func, ))
@@ -31,9 +32,10 @@ def ins_acesso():
                 continue
             if tipo.lower() == 'saida':
                 tipo = 'saída'
+            acesso = classes.Acesso(id_func, id_local, tipo)
             comando = '''INSERT INTO acesso (funcionario_ID, local_ID, tipo) 
             VALUES (?, ?, ?);'''
-            cursor.execute(comando, (id_func, id_local, tipo))
+            cursor.execute(comando, (acesso.id_func, acesso.id_local, acesso.tipo))
             confirm = input('Confirmar acesso? [S/N] ')         # MessageBox
             if confirm.lower() == 's':
                 conexao.commit()
