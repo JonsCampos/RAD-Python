@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, messagebox as mb
 import classCrud
 
 # Janela
@@ -7,8 +7,11 @@ janela = tk.Tk()
 janela.geometry('800x500')
 janela.title('Controle de acesso')
 
+# Criação das tabelas (caso não exista)
+classCrud.tabelas()
+
 # Título
-ttk.Label(janela, text="Sistema de Controle de Acesso", font=(12)).place(x=285, y=7)
+ttk.Label(janela, text='Sistema de Controle de Acesso', font=(12)).place(x=285, y=7)
 
 # Entry - ID Funcionário
 labelFunc = ttk.Label(text='ID do funcionário')
@@ -21,7 +24,10 @@ labelPortaria = ttk.Label(text='Portaria')
 labelPortaria.place(x=320, y=60)
 portaria = ttk.Combobox(janela, state='readonly')
 registros = classCrud.fillCombobox()
-portaria['values'] = [registro[0] for registro in registros]
+if registros == []:
+    portaria['values'] = ['Sem registros']
+else:
+    portaria['values'] = [registro[0] for registro in registros]
 portaria.current(0)
 portaria.place(x=320, y=80)
 
@@ -39,7 +45,7 @@ colunas = ('Nome', 'Setor', 'Tipo', 'Portaria', 'Data - Hora')
 treeAcessos = ttk.Treeview(janela,columns=colunas, selectmode='browse')
 treeAcessos['show'] = 'headings'
 # Scrollbar
-scroll = ttk.Scrollbar(janela, orient="vertical", command=treeAcessos.yview)        
+scroll = ttk.Scrollbar(janela, orient='vertical', command=treeAcessos.yview)        
 scroll.pack(side ='right', fill ='x')
 treeAcessos.configure(yscrollcommand=scroll.set)
 scroll.place(x=752, y=230, height=225)
