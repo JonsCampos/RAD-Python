@@ -4,24 +4,25 @@ import classCrud
 
 # Janela
 janela = tk.Tk()
-janela.geometry('800x500')
+posx, posy = int((janela.winfo_screenwidth()-800)/2), int((janela.winfo_screenheight()-500)/2)
+janela.geometry(f'800x500+{posx}+{posy}')
 janela.title('Controle de acesso')
 
 # Criação das tabelas (caso não exista)
 classCrud.tabelas()
 
 # Título
-ttk.Label(janela, text='Sistema de Controle de Acesso', font=(12)).place(x=285, y=7)
+ttk.Label(janela, text='Sistema de Controle de Acesso', font=(12)).place(x=287, y=7, width=225)
 
 # Entry - ID Funcionário
 labelFunc = ttk.Label(text='ID do funcionário')
-labelFunc.place(x=100, y=60)
+labelFunc.place(x=125, y=60)
 idFunc = tk.Entry(janela)
-idFunc.place(x=100, y=80)
+idFunc.place(x=125, y=80, width=120)
 
 # Combobox - Portaria
 labelPortaria = ttk.Label(text='Portaria')
-labelPortaria.place(x=320, y=60)
+labelPortaria.place(x=340, y=60)
 portaria = ttk.Combobox(janela, state='readonly')
 registros = classCrud.fillCombobox()
 if registros == []:
@@ -29,7 +30,7 @@ if registros == []:
 else:
     portaria['values'] = [registro[0] for registro in registros]
 portaria.current(0)
-portaria.place(x=320, y=80)
+portaria.place(x=340, y=80, width=120)
 
 # Radiobutton - Tipo
 labelAcesso = ttk.Label(text='Tipo de acesso')
@@ -65,7 +66,7 @@ treeAcessos.place(x=40, y=230)
 
 # Button - Inserir
 inserirbtn = tk.Button(janela, text='Inserir', command=lambda: classCrud.insert(idFunc, portaria, tipo, treeAcessos))
-inserirbtn.place(x=100, y=140)
+inserirbtn.place(x=125, y=140)
 
 # Atualização TreeView
 classCrud.attTree(treeAcessos)
