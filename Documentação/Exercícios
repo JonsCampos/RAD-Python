@@ -30,3 +30,7 @@ QUESTÃO 2 - a) commit()
 AULA 8
 QUESTÃO 1 - a) execute()
 QUESTÃO 2 - c) fetchone, fetchall e fetchmany.
+
+AULA 9
+QUESTÃO 1 - d) É o framework padrão do Python para desenvolvimento de aplicações GUI.
+QUESTÃO 2 - c) Uma das formas de instalá-lo é através do pip, ou seja, pip install flexx.
