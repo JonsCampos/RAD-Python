@@ -2,31 +2,18 @@ import sqlite3 as conector
 import tkinter as tk
 from tkinter import messagebox as mb
 
-#-----------------------------------------------------------------------------
+#--------------------------------------------------------------------------
 # Classes
-#-----------------------------------------------------------------------------
+#--------------------------------------------------------------------------
 class Acesso:
-    def __init__(self, idFunc, idLocal, tipo):
-        self.__idFunc = idFunc
+    def __init__(self, IDFunc, idLocal, tipo):
+        self.__IDFunc = IDFunc
         self.__idLocal = idLocal
         self.__tipo = tipo
     
     def get(self):
-         return self.__idFunc, self.__idLocal, self.__tipo
+         return self.__IDFunc, self.__idLocal, self.__tipo
     
-class Funcionario:    
-    def setIDFuncionario(self, IDFuncionario):
-        self.__IDFuncionario = IDFuncionario
-
-    def setNomeFuncionario(self, nomeFuncionario):
-        self.__nomeFuncionario = nomeFuncionario
-
-    def getIDSetor(self):
-        return self.__IDFuncionario
-
-    def getNomeFuncionario(self):
-        return self.__nomeFuncionario
-
 class Setor:    
     def setIDSetor(self, IDSetor):
         self.__IDSetor = IDSetor
@@ -40,6 +27,43 @@ class Setor:
     def getNomeSetor(self):
         return self.__nomeSetor
 
+class Funcionario:    
+    def setIDFuncionario(self, IDFuncionario):
+        self.__IDFuncionario = IDFuncionario
+
+    def setNomeFuncionario(self, nomeFuncionario):
+        self.__nomeFuncionario = nomeFuncionario
+
+    def getIDSetor(self):
+        return self.__IDFuncionario
+
+    def getNomeFuncionario(self):
+        return self.__nomeFuncionario
+
+class Usuario:
+    def setIDUsuario(self, IDUsuario):
+        self.__IDUsuario = IDUsuario
+
+    def setNomeUsuario(self, nomeUsuario):
+        self.__nomeUsuario = nomeUsuario
+
+    def setSenhaUsuario(self, SenhaUsuario):
+        self.__SenhaUsuario = SenhaUsuario
+
+    def setIDFuncionario(self, IDFuncionario):
+        self.__IDFuncionario = IDFuncionario
+
+    def getIDUsuario(self):
+        return self.__IDUsuario
+
+    def getNomeUsuario(self):
+        return self.__nomeUsuario     
+
+    def getSenhaUsuario(self):
+        return self.__SenhaUsuario
+
+    def getIDFuncionario(self):
+        return self.__IDFuncionario    
 
 class Local:    
     def setIDLocal(self, IDLocal):
@@ -54,9 +78,9 @@ class Local:
     def getNomeLocal(self):
         return self.__nomeLocal
 
-#-----------------------------------------------------------------------------
+#--------------------------------------------------------------------------
 # Abrir Conexão
-#-----------------------------------------------------------------------------
+#--------------------------------------------------------------------------
 def abrirConexao():
     try:
         conexao = conector.connect('./db_controle_acesso.db') 
@@ -66,17 +90,25 @@ def abrirConexao():
     finally:    
         return conexao, cursor
 
-#-----------------------------------------------------------------------------
+#--------------------------------------------------------------------------
 # Fechar Conexão
-#-----------------------------------------------------------------------------
+#--------------------------------------------------------------------------
 def fecharConexao(conexao, cursor):
     cursor.close()
     conexao.close()
     return conexao, cursor
 
-#-----------------------------------------------------------------------------
+#--------------------------------------------------------------------------
+# Verificação Funcionário existe
+#--------------------------------------------------------------------------
+def verificarFuncionario(IDFuncionario, cursor):  # Verifica se funcionário existe
+    cursor.execute('SELECT COUNT(*) FROM funcionario WHERE funcionario_ID = ?', (IDFuncionario, ))
+    selectFunc = cursor.fetchone()[0]
+    return selectFunc
+
+#--------------------------------------------------------------------------
 # CRUD Acesso
-#-----------------------------------------------------------------------------
+#--------------------------------------------------------------------------
 def fillComboboxLocal():    # Preenchimento dos locais
     try:
         conexao, cursor = abrirConexao()
@@ -119,21 +151,16 @@ def attTreeAcesso(treeAcessos):   # Atualização TreeView
         if (conexao):
             conexao, cursor = fecharConexao(conexao, cursor)
 
-def verificarFunc(idFunc, cursor):  # Verifica se funcionário existe
-    cursor.execute('SELECT COUNT(*) FROM funcionario WHERE funcionario_ID = ?', (idFunc, ))
-    selectFunc = cursor.fetchone()[0]
-    return selectFunc
-
 def pegarIDLocal(local, cursor):    # Pega o ID do local selecionado
     cursor.execute('SELECT local_ID FROM Local WHERE nome_local = ?', (local['values'][local.current()], ))
     selectLocal_ID = cursor.fetchone()[0]
     return selectLocal_ID
 
-def insertAcesso(idFunc, local, tipo, treeAcessos):   # Insert tabela Acesso
+def insertAcesso(IDFunc, local, tipo, treeAcessos):   # Insert tabela Acesso
     try:
         conexao, cursor = abrirConexao()
         # Verificação Funcionário
-        selectFunc = verificarFuncionario(idFunc.get(), cursor)
+        selectFunc = verificarFuncionario(IDFunc.get(), cursor)
         if selectFunc == 0:
             mb.showerror('Erro', 'Funcionário não encontrado')
             return
@@ -144,7 +171,7 @@ def insertAcesso(idFunc, local, tipo, treeAcessos):   # Insert tabela Acesso
         else:
             selectLocal_ID = pegarIDLocal(local, cursor)
         # Instância da classe Acesso
-        acesso = Acesso(idFunc.get(), selectLocal_ID, tipo.get())
+        acesso = Acesso(IDFunc.get(), selectLocal_ID, tipo.get())
         # Insert - Acesso
         comando = '''INSERT INTO acesso (funcionario_ID, local_ID, tipo) 
                         VALUES (?, ?, ?);'''
@@ -162,28 +189,24 @@ def insertAcesso(idFunc, local, tipo, treeAcessos):   # Insert tabela Acesso
         # Atualização TreeView
         attTreeAcesso(treeAcessos)
 
-#-----------------------------------------------------------------------------
+#--------------------------------------------------------------------------
 # CRUD Setor
-#-----------------------------------------------------------------------------
-
+#--------------------------------------------------------------------------
 def attTreeSetor(treeSetor):       # Atualização TreeView
     # Apaga registros antigos
     for registro in treeSetor.get_children():
         treeSetor.delete(registro)
-
     try:
         # Select - Locais
         conexao, cursor = abrirConexao()
         comando = '''SELECT * FROM setor;'''
         cursor.execute(comando)
         registros = cursor.fetchall()
-
         # Coloca novos registros
         for registro in registros:
             treeID = registro[0]
             treeNome = registro[1]
-            treeSetor.insert('', 'end', values=(treeID, treeNome))
-            
+            treeSetor.insert('', 'end', values=(treeID, treeNome))           
     except conector.Error as erro:
             mb.showerror('Erro', f'Erro ao exibir os setores: {erro}')
     finally:
@@ -205,7 +228,7 @@ def insertSetor(nomeSetor, treeSetor):   # Insert tabela Setor
         conexao, cursor = abrirConexao()
         # Verificação nome do setor vazio
         if nomeSetor.get() == '':
-            mb.showerror('Erro', 'Nome do setor vazio')
+            mb.showerror('Erro', 'Nome inválido')
             return
         # Verificação nome do setor
         selectNomeSetor = verificarNomeSetor(nomeSetor.get(), cursor)
@@ -243,7 +266,7 @@ def updateSetor(IDSetor, nomeSetor, treeSetor):  # Update tabela Setor
             return
         # Verificação nome do setor vazio
         if nomeSetor.get() == '':
-            mb.showerror('Erro', 'Nome do setor vazio')
+            mb.showerror('Erro', 'Nome inválido')
             return
         # Verificação nome do setor
         selectNomeSetor = verificarNomeSetor(nomeSetor.get(), cursor)
@@ -302,28 +325,343 @@ def deleteSetor(IDSetor, treeSetor): # Delete tabela setor
         # Atualização TreeView
         attTreeSetor(treeSetor)
 
+#--------------------------------------------------------------------------
+# CRUD Funcionario
+#--------------------------------------------------------------------------
+def fillComboboxSetor():    # Preenchimento dos locais
+    try:
+        conexao, cursor = abrirConexao()
+        comando = '''SELECT nome_setor FROM Setor;'''
+        cursor.execute(comando)
+        registros = cursor.fetchall()
+    except conector.Error as erro:
+        mb.showerror('Erro', f'Erro ao listar os setores: {erro}')
+    finally:
+        if (conexao):
+            conexao, cursor = fecharConexao(conexao, cursor)
+    return registros
 
-#-----------------------------------------------------------------------------
+def attTreeFuncionario(treeFuncionario):       # Atualização TreeView
+    # Apaga registros antigos
+    for registro in treeFuncionario.get_children():
+        treeFuncionario.delete(registro)
+    try:
+        # Select - Funcionarios
+        conexao, cursor = abrirConexao()
+        comando = '''SELECT funcionario_ID, nome, nome_setor
+                    FROM Funcionario
+                    LEFT JOIN Setor ON Setor.setor_ID = Funcionario.setor_ID'''
+        cursor.execute(comando)
+        registros = cursor.fetchall()
+        # Coloca novos registros
+        for registro in registros:
+            treeID = registro[0]
+            treeNome = registro[1]
+            treeSetor = registro[2]
+            treeFuncionario.insert('', 'end', values=(treeID, treeNome, treeSetor))            
+    except conector.Error as erro:
+            mb.showerror('Erro', f'Erro ao exibir os funcionários: {erro}')
+    finally:
+        if (conexao):
+            conexao, cursor = fecharConexao(conexao, cursor)
+
+def verificarNomeFuncionario(nomeFuncionario, cursor):   # Verificar nome do funcionario repetido
+    cursor.execute('SELECT COUNT(*) FROM funcionario WHERE nome = ?', (nomeFuncionario, ))
+    selectNomeFuncionario = cursor.fetchone()[0]
+    return selectNomeFuncionario
+
+def insertFuncionario(nomeFuncionario, treeFuncionario):   # Insert tabela Funcionario
+    try:
+        conexao, cursor = abrirConexao()
+        # Verificação nome do funcionario vazio
+        if nomeFuncionario.get() == '':
+            mb.showerror('Erro', 'Nome inválido')
+            return
+        # Verificação nome do funcionario
+        selectNomeFuncionario = verificarNomeFuncionario(nomeFuncionario.get(), cursor)
+        if selectNomeFuncionario != 0:
+            mb.showerror('Erro', 'Funcionário já registrado\nTente outro nome')
+            return
+        # Instância da classe Funcionario
+        funcionario = Funcionario()
+        funcionario.setNomeFuncionario(nomeFuncionario.get())
+        # Insert - Funcionario
+        comando = '''INSERT INTO funcionario (nome) 
+                        VALUES (?);'''
+        cursor.execute(comando, (funcionario.getNomeFuncionario(), ))
+        # Messagebox - Confirmação
+        if mb.askyesno('Confirmação', 'Confirmar inserção?'):
+            conexao.commit()
+        else:
+            conexao.rollback()
+    except conector.Error as erro:
+            mb.showerror('Erro', f'Erro ao inserir os dados: {erro}')
+    finally:
+        nomeFuncionario.delete(0, tk.END)
+        if (conexao):
+            conexao, cursor = fecharConexao(conexao, cursor)
+        # Atualização TreeView
+        attTreeFuncionario(treeFuncionario)
+
+def updateFuncionario(IDFuncionario, nomeFuncionario, treeFuncionario):  # Update tabela Funcionario
+    try:
+        conexao, cursor = abrirConexao()
+        # Verificação ID
+        selectFunc = verificarFuncionario(IDFuncionario.get(), cursor)
+        if selectFunc == 0:
+            mb.showerror('Erro', 'ID inválido')
+            return
+        # Verificação nome do funcionario vazio
+        if nomeFuncionario.get() == '':
+            mb.showerror('Erro', 'Nome inválido')
+            return
+        # Verificação nome do funcionario
+        selectNomeFuncionario = verificarNomeFuncionario(nomeFuncionario.get(), cursor)
+        if selectNomeFuncionario != 0:
+            mb.showerror('Erro', 'Funcionário já registrado\nTente outro nome')
+            return
+        # Instância da classe funcionario
+        funcionario = Funcionario()
+        funcionario.setIDFuncionario(IDFuncionario.get())
+        funcionario.setNomeFuncionario(nomeFuncionario.get())
+        # Update - Funcionario
+        comando = '''UPDATE Funcionario
+                        SET nome_funcionario = (?)
+                        WHERE funcionario_ID = (?);'''
+        cursor.execute(comando, (funcionario.getNomeFuncionario(), funcionario.getIDFuncionario()))
+        # Messagebox - Confirmação
+        if mb.askyesno('Confirmação', 'Confirmar Atualização?'):
+            conexao.commit()
+        else:
+            conexao.rollback()
+    except conector.Error as erro:
+            mb.showerror('Erro', f'Erro ao atualizar os dados: {erro}')
+    finally:
+        nomeFuncionario.delete(0, tk.END)
+        IDFuncionario.delete(0, tk.END)
+        if (conexao):
+            conexao, cursor = fecharConexao(conexao, cursor)
+        # Atualização TreeView
+        attTreeFuncionario(treeFuncionario)
+
+def deleteFuncionario(IDFuncionario, treeFuncionario): # Delete tabela Funcionario
+    try:
+        conexao, cursor = abrirConexao()
+        # Verificação ID
+        selectFunc = verificarFuncionario(IDFuncionario.get(), cursor)
+        if selectFunc == 0:
+            mb.showerror('Erro', 'ID inválido')
+            return
+        # Instância da classe Funcionario
+        funcionario = Funcionario()
+        funcionario.setIDFuncionario(IDFuncionario.get())
+        # Delete - Funcionario
+        comando = '''DELETE FROM funcionario WHERE funcionario_ID = (?);'''
+        cursor.execute(comando, (funcionario.getIDFuncionario(), ))
+        # Messagebox - Confirmação
+        if mb.askyesno('Confirmação', 'Confirmar Remoção?'):
+            conexao.commit()
+        else:
+            conexao.rollback()   
+    except conector.Error as erro:
+            mb.showerror('Erro', f'Erro ao remover os dados: {erro}')
+    finally:
+        IDFuncionario.delete(0, tk.END)
+        if (conexao):
+            conexao, cursor = fecharConexao(conexao, cursor)
+        # Atualização TreeView
+        attTreeFuncionario(treeFuncionario)
+
+#--------------------------------------------------------------------------
+# CRUD Usuario
+#--------------------------------------------------------------------------
+def attTreeUsuario(treeUsuario):       # Atualização TreeView
+    # Apaga registros antigos
+    for registro in treeUsuario.get_children():
+        treeUsuario.delete(registro)
+    try:
+        # Select - Locais
+        conexao, cursor = abrirConexao()
+        comando = '''SELECT u.usuario_ID, u.nome_usuario, f.nome
+                        FROM Usuario u
+                        JOIN Funcionario f ON u.funcionario_ID = f.funcionario_ID;'''
+        cursor.execute(comando)
+        registros = cursor.fetchall()
+        # Coloca novos registros
+        for registro in registros:
+            treeID = registro[0]
+            treeNomeUsuario = registro[1]
+            treeFuncionario = registro[2]
+            treeUsuario.insert('', 'end', values=(treeID, treeNomeUsuario, treeFuncionario))           
+    except conector.Error as erro:
+            mb.showerror('Erro', f'Erro ao exibir os usuários: {erro}')
+    finally:
+        if (conexao):
+            conexao, cursor = fecharConexao(conexao, cursor)
+
+def verificarUsuario(IDUsuario, cursor):    # Verifica se usuario existe
+    cursor.execute('SELECT COUNT(*) FROM usuario WHERE usuario_ID = ?', (IDUsuario, ))
+    selectID = cursor.fetchone()[0]
+    return selectID
+
+def verificarNomeUsuario(nomeUsuario, cursor):   # Verificar nome de usuário repetido
+    cursor.execute('SELECT COUNT(*) FROM usuario WHERE nome_usuario = ?;', (nomeUsuario, ))
+    selectNomeUsuario = cursor.fetchone()[0]
+    return selectNomeUsuario
+
+def verificarFuncionarioUsuario(IDFuncionario, cursor): # Verificar se funcionário já tem usuário
+    cursor.execute('SELECT COUNT(*) FROM usuario WHERE funcionario_ID = ?;', (IDFuncionario, ))
+    selectFuncUsuario = cursor.fetchone()[0]
+    return selectFuncUsuario
+
+def insertUsuario(nomeUsuario, senhaUsuario, IDFuncionario, treeUsuario): # Insert tabela Usuario
+    try:
+        conexao, cursor = abrirConexao()
+        # Verificação nome de usuário vazio
+        if nomeUsuario.get() == '':
+            mb.showerror('Erro', 'Nome de usuário inválido')
+            return
+        # Verificação nome do usuário
+        selectNomeUsuario = verificarNomeUsuario(nomeUsuario.get(), cursor)
+        if selectNomeUsuario != 0:
+            mb.showerror('Erro', 'Usuário já registrado\nTente outro nome')
+            return
+        # Verificação senha vazia
+        if senhaUsuario.get() == '':
+            mb.showerror('Erro', 'Senha inválida')
+            return
+        # Verificação ID do funcionário vazio
+        if IDFuncionario.get() == '':
+            mb.showerror('Erro', 'ID do funcionário inválido')
+            return
+        # Verificação Funcionário
+        selectFunc = verificarFuncionario(IDFuncionario.get(), cursor)
+        if selectFunc == 0:
+            mb.showerror('Erro', 'Funcionário não encontrado')
+            return
+        else:
+            selectFuncUsuario = verificarFuncionarioUsuario(IDFuncionario.get(), cursor)
+            if selectFuncUsuario != 0:
+                mb.showerror('Erro', 'Funcionário já tem um usuário')
+                return
+        # Instância da classe Usuário
+        usuario = Usuario()
+        usuario.setNomeUsuario(nomeUsuario.get())
+        usuario.setSenhaUsuario(senhaUsuario.get())
+        usuario.setIDFuncionario(IDFuncionario.get())
+        # Insert - Usuario
+        comando = '''INSERT INTO usuario (nome_usuario, senha, funcionario_ID) 
+                        VALUES (?, ?, ?);'''
+        cursor.execute(comando, (usuario.getNomeUsuario(), usuario.getSenhaUsuario(), usuario.getIDFuncionario()))
+        # Messagebox - Confirmação
+        if mb.askyesno('Confirmação', 'Confirmar inserção?'):
+            conexao.commit()
+        else:
+            conexao.rollback()
+    except conector.Error as erro:
+            mb.showerror('Erro', f'Erro ao inserir os dados: {erro}')
+    finally:
+        nomeUsuario.delete(0, tk.END)
+        senhaUsuario.delete(0, tk.END)
+        IDFuncionario.delete(0, tk.END)
+        if (conexao):
+            conexao, cursor = fecharConexao(conexao, cursor)
+        # Atualização TreeView
+        attTreeUsuario(treeUsuario)
+
+def updateUsuario(IDUsuario, nomeUsuario, senhaUsuario, treeUsuario):  # Update tabela Usuario
+    try:
+        conexao, cursor = abrirConexao()
+        # Verificação ID
+        selectID = verificarUsuario(IDUsuario.get(), cursor)
+        if selectID == 0:
+            mb.showerror('Erro', 'ID do usuário inválido')
+            return
+        # Verificação nome de usuário vazio
+        if nomeUsuario.get() == '':
+            mb.showerror('Erro', 'Nome de usuário inválido')
+            return
+        # Verificação nome do usuário
+        selectNomeUsuario = verificarNomeUsuario(nomeUsuario.get(), cursor)
+        if selectNomeUsuario != 0:
+            mb.showerror('Erro', 'Usuário já registrado\nTente outro nome')
+            return
+        # Verificação senha vazia
+        if senhaUsuario.get() == '':
+            mb.showerror('Erro', 'Senha inválida')
+            return
+        # Instância da classe Usuário
+        usuario = Usuario()
+        usuario.setIDUsuario(IDUsuario.get())
+        usuario.setNomeUsuario(nomeUsuario.get())
+        usuario.setSenhaUsuario(senhaUsuario.get())
+        # Update - Usuário
+        comando = '''UPDATE Usuario
+                        SET nome_usuario = (?), senha = (?)
+                        WHERE usuario_ID = (?);'''
+        cursor.execute(comando, (usuario.getNomeUsuario(), usuario.getSenhaUsuario(), usuario.getIDUsuario()))
+        # Messagebox - Confirmação
+        if mb.askyesno('Confirmação', 'Confirmar Atualização?'):
+            conexao.commit()
+        else:
+            conexao.rollback()
+    except conector.Error as erro:
+            mb.showerror('Erro', f'Erro ao atualizar os dados: {erro}')
+    finally:
+        IDUsuario.delete(0, tk.END)
+        nomeUsuario.delete(0, tk.END)
+        senhaUsuario.delete(0, tk.END)
+        if (conexao):
+            conexao, cursor = fecharConexao(conexao, cursor)
+        # Atualização TreeView
+        attTreeUsuario(treeUsuario)
+
+def deleteUsuario(IDUsuario, treeUsuario): # Delete tabela Usuario
+    try:
+        conexao, cursor = abrirConexao()
+        # Verificação ID
+        selectID = verificarUsuario(IDUsuario.get(), cursor)
+        if selectID == 0:
+            mb.showerror('Erro', 'ID do usuário inválido')
+            return
+        # Instância da classe Usuario
+        usuario = Usuario()
+        usuario.setIDUsuario(IDUsuario.get())
+        # Delete - Usuario
+        comando = '''DELETE FROM Usuario WHERE usuario_ID = (?);'''
+        cursor.execute(comando, (usuario.getIDUsuario(), ))
+        # Messagebox - Confirmação
+        if mb.askyesno('Confirmação', 'Confirmar Remoção?'):
+            conexao.commit()
+        else:
+            conexao.rollback()   
+    except conector.Error as erro:
+            mb.showerror('Erro', f'Erro ao remover os dados: {erro}')
+    finally:
+        IDUsuario.delete(0, tk.END)
+        if (conexao):
+            conexao, cursor = fecharConexao(conexao, cursor)
+        # Atualização TreeView
+        attTreeUsuario(treeUsuario)        
+
+#--------------------------------------------------------------------------
 # CRUD Local
-#-----------------------------------------------------------------------------
+#--------------------------------------------------------------------------
 def attTreeLocal(treeLocal):       # Atualização TreeView
     # Apaga registros antigos
     for registro in treeLocal.get_children():
         treeLocal.delete(registro)
-
     try:
         # Select - Locais
         conexao, cursor = abrirConexao()
         comando = '''SELECT * FROM local;'''
         cursor.execute(comando)
         registros = cursor.fetchall()
-
         # Coloca novos registros
         for registro in registros:
             treeID = registro[0]
             treeNome = registro[1]
-            treeLocal.insert('', 'end', values=(treeID, treeNome))
-            
+            treeLocal.insert('', 'end', values=(treeID, treeNome))            
     except conector.Error as erro:
             mb.showerror('Erro', f'Erro ao exibir os locais: {erro}')
     finally:
@@ -345,7 +683,7 @@ def insertLocal(nomeLocal, treeLocal):   # Insert tabela Local
         conexao, cursor = abrirConexao()
         # Verificação nome do local vazio
         if nomeLocal.get() == '':
-            mb.showerror('Erro', 'Nome do local vazio')
+            mb.showerror('Erro', 'Nome inválido')
             return
         # Verificação nome do local
         selectNomeLocal = verificarNomeLocal(nomeLocal.get(), cursor)
@@ -383,7 +721,7 @@ def updateLocal(IDLocal, nomeLocal, treeLocal):  # Update tabela Local
             return
         # Verificação nome do local vazio
         if nomeLocal.get() == '':
-            mb.showerror('Erro', 'Nome do local vazio')
+            mb.showerror('Erro', 'Nome inválido')
             return
         # Verificação nome do local
         selectNomeLocal = verificarNomeLocal(nomeLocal.get(), cursor)
@@ -442,210 +780,61 @@ def deleteLocal(IDLocal, treeLocal): # Delete tabela Local
         # Atualização TreeView
         attTreeLocal(treeLocal)
 
+#--------------------------------------------------------------------------
+# Main - Login
+#--------------------------------------------------------------------------
 
-#-----------------------------------------------------------------------------
-# CRUD Funcionario
-#-----------------------------------------------------------------------------
 
-def fillComboboxSetor():    # Preenchimento dos locais
-    try:
-        conexao, cursor = abrirConexao()
-        comando = '''SELECT nome_setor FROM Setor;'''
-        cursor.execute(comando)
-        registros = cursor.fetchall()
-    except conector.Error as erro:
-        mb.showerror('Erro', f'Erro ao listar os setores: {erro}')
-    finally:
-        if (conexao):
-            conexao, cursor = fecharConexao(conexao, cursor)
-    return registros
 
-def attTreeFuncionario(treeFuncionario):       # Atualização TreeView
-    # Apaga registros antigos
-    for registro in treeFuncionario.get_children():
-        treeFuncionario.delete(registro)
 
-    try:
-        # Select - Funcionarios
-        conexao, cursor = abrirConexao()
-        comando = '''SELECT funcionario_ID, nome, nome_setor
-                    FROM Funcionario
-                    LEFT JOIN Setor ON Setor.setor_ID = Funcionario.setor_ID'''
-        cursor.execute(comando)
-        registros = cursor.fetchall()
 
-        # Coloca novos registros
-        for registro in registros:
-            treeID = registro[0]
-            treeNome = registro[1]
-            treeSetor = registro[2]
-            treeFuncionario.insert('', 'end', values=(treeID, treeNome, treeSetor))
-            
-    except conector.Error as erro:
-            mb.showerror('Erro', f'Erro ao exibir os funcionários: {erro}')
-    finally:
-        if (conexao):
-            conexao, cursor = fecharConexao(conexao, cursor)
 
-def verificarFuncionario(IDFuncionario, cursor):    # Verifica se funcionario existe
-    cursor.execute('SELECT COUNT(*) FROM funcionario WHERE funcionario_ID = ?', (IDFuncionario, ))
-    selectID = cursor.fetchone()[0]
-    return selectID
-
-def verificarNomeFuncionario(nomeFuncionario, cursor):   # Verificar nome do funcionario repetido
-    cursor.execute('SELECT COUNT(*) FROM funcionario WHERE nome = ?', (nomeFuncionario, ))
-    selectNomeFuncionario = cursor.fetchone()[0]
-    return selectNomeFuncionario
-
-def insertFuncionario(nomeFuncionario, treeFuncionario):   # Insert tabela Funcionario
-    try:
-        conexao, cursor = abrirConexao()
-        # Verificação nome do funcionario vazio
-        if nomeFuncionario.get() == '':
-            mb.showerror('Erro', 'Nome do funcionario vazio')
-            return
-        # Verificação nome do funcionario
-        selectNomeFuncionario = verificarNomeFuncionario(nomeFuncionario.get(), cursor)
-        if selectNomeFuncionario != 0:
-            mb.showerror('Erro', 'Funcionário já registrado\nTente outro nome')
-            return
-        # Instância da classe Funcionario
-        funcionario = Funcionario()
-        funcionario.setNomeFuncionario(nomeFuncionario.get())
-        # Insert - Funcionario
-        comando = '''INSERT INTO funcionario (nome) 
-                        VALUES (?);'''
-        cursor.execute(comando, (funcionario.getNomeFuncionario(), ))
-        # Messagebox - Confirmação
-        if mb.askyesno('Confirmação', 'Confirmar inserção?'):
-            conexao.commit()
-        else:
-            conexao.rollback()
-    except conector.Error as erro:
-            mb.showerror('Erro', f'Erro ao inserir os dados: {erro}')
-    finally:
-        nomeFuncionario.delete(0, tk.END)
-        if (conexao):
-            conexao, cursor = fecharConexao(conexao, cursor)
-        # Atualização TreeView
-        attTreeFuncionario(treeFuncionario)
-
-def updateFuncionario(IDFuncionario, nomeFuncionario, treeFuncionario):  # Update tabela Funcionario
-    try:
-        conexao, cursor = abrirConexao()
-        # Verificação ID
-        selectID = verificarFuncionario(IDFuncionario.get(), cursor)
-        if selectID == 0:
-            mb.showerror('Erro', 'ID inválido')
-            return
-        # Verificação nome do funcionario vazio
-        if nomeFuncionario.get() == '':
-            mb.showerror('Erro', 'Nome do funcionário vazio')
-            return
-        # Verificação nome do funcionario
-        selectNomeFuncionario = verificarNomeFuncionario(nomeFuncionario.get(), cursor)
-        if selectNomeFuncionario != 0:
-            mb.showerror('Erro', 'Funcionário já registrado\nTente outro nome')
-            return
-        # Instância da classe funcionario
-        funcionario = Funcionario()
-        funcionario.setIDFuncionario(IDFuncionario.get())
-        funcionario.setNomeFuncionario(nomeFuncionario.get())
-        # Update - Funcionario
-        comando = '''UPDATE Funcionario
-                        SET nome_funcionario = (?)
-                        WHERE funcionario_ID = (?);'''
-        cursor.execute(comando, (funcionario.getNomeFuncionario(), funcionario.getIDFuncionario()))
-        # Messagebox - Confirmação
-        if mb.askyesno('Confirmação', 'Confirmar Atualização?'):
-            conexao.commit()
-        else:
-            conexao.rollback()
-    except conector.Error as erro:
-            mb.showerror('Erro', f'Erro ao atualizar os dados: {erro}')
-    finally:
-        nomeFuncionario.delete(0, tk.END)
-        IDFuncionario.delete(0, tk.END)
-        if (conexao):
-            conexao, cursor = fecharConexao(conexao, cursor)
-        # Atualização TreeView
-        attTreeFuncionario(treeFuncionario)
-
-def deleteFuncionario(IDFuncionario, treeFuncionario): # Delete tabela Funcionario
-    try:
-        conexao, cursor = abrirConexao()
-        # Verificação ID
-        selectID = verificarFuncionario(IDFuncionario.get(), cursor)
-        if selectID == 0:
-            mb.showerror('Erro', 'ID inválido')
-            return
-        # Instância da classe Funcionario
-        funcionario = Funcionario()
-        funcionario.setIDFuncionario(IDFuncionario.get())
-        # Delete - Funcionario
-        comando = '''DELETE FROM funcionario WHERE funcionario_ID = (?);'''
-        cursor.execute(comando, (funcionario.getIDFuncionario(), ))
-        # Messagebox - Confirmação
-        if mb.askyesno('Confirmação', 'Confirmar Remoção?'):
-            conexao.commit()
-        else:
-            conexao.rollback()   
-    except conector.Error as erro:
-            mb.showerror('Erro', f'Erro ao remover os dados: {erro}')
-    finally:
-        IDFuncionario.delete(0, tk.END)
-        if (conexao):
-            conexao, cursor = fecharConexao(conexao, cursor)
-        # Atualização TreeView
-        attTreeFuncionario(treeFuncionario)
-
-#-----------------------------------------------------------------------------
+#--------------------------------------------------------------------------
 # Tabelas
-#-----------------------------------------------------------------------------
+#--------------------------------------------------------------------------
 def tabelas():  # Criação das tabelas (caso não exista)
     try:
         conexao, cursor = abrirConexao()
         # Setor
         comando = '''CREATE TABLE IF NOT EXISTS "Setor" (
                         "setor_ID" INTEGER NOT NULL,
-                        "nome_setor" VARCHAR(50) NOT NULL,
+                        "nome_setor" VARCHAR(50) NOT NULL UNIQUE,
                         "desc_setor" VARCHAR(255),
                         PRIMARY KEY("setor_ID" AUTOINCREMENT)
                     );'''
         cursor.execute(comando, )
         conexao.commit()
-        # Funcionário
 
+        # Funcionário
         comando = '''CREATE TABLE IF NOT EXISTS "Funcionario" (
-                        "funcionario_ID" INTEGER NOT NULL,
-                        "nome_funcionario"	VARCHAR(50) NOT NULL,
-                        "dt_nasc" DATE NOT NULL,
-                        "CPF" VARCHAR(14) NOT NULL,
-                        "telefone" VARCHAR(20),
-                        "email"	VARCHAR(100),
-                        "setor_ID" INTEGER NOT NULL,
-                        PRIMARY KEY("funcionario_ID" AUTOINCREMENT),
-                        FOREIGN KEY("setor_ID") REFERENCES "Setor"("setor_ID")
+	                    "funcionario_ID" INTEGER NOT NULL,
+	                    "nome"	VARCHAR(50) NOT NULL,
+	                    "email"	VARCHAR(100),
+	                    "setor_ID" INTEGER NOT NULL,
+	                    PRIMARY KEY("funcionario_ID" AUTOINCREMENT),
+	                    FOREIGN KEY("setor_ID") REFERENCES "Setor"("setor_ID")
                     );'''
         cursor.execute(comando, )
         conexao.commit()
-        # Local
 
+        # Usuario
+        comando = '''CREATE TABLE IF NOT EXISTS "Usuario" (
+	                    "usuario_ID" INTEGER NOT NULL,
+	                    "nome_usuario" VARCHAR(50) NOT NULL UNIQUE,
+	                    "senha" VARCHAR(50) NOT NULL,
+	                    "funcionario_ID" INTEGER NOT NULL,
+	                    PRIMARY KEY("usuario_ID" AUTOINCREMENT)
+	                    FOREIGN KEY("funcionario_ID") REFERENCES "Funcionario"("funcionario_ID") ON DELETE CASCADE
+                    );'''
+        cursor.execute(comando, )
+        conexao.commit()
+
+        # Local
         comando = '''CREATE TABLE IF NOT EXISTS "Local" (
                         "local_ID" INTEGER NOT NULL,
                         "nome_local" VARCHAR(50) NOT NULL UNIQUE,
                         PRIMARY KEY("local_ID" AUTOINCREMENT)
                     );'''
-        cursor.execute(comando, )
-        conexao.commit()
-
-        #Setor
-        comando = '''CREATE TABLE IF NOT EXISTS "Setor"(
-                        "setor_ID" INTEGER NOT NULL,
-                        "nome_setor" VARCHAR(50) NOT NULL,
-                        PRIMARY KEY("setor_ID" AUTOINCREMENT) 
-                );'''
-
         cursor.execute(comando, )
         conexao.commit()
 
