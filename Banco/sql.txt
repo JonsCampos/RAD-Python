@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS "Setor" (
 	"setor_ID" INTEGER NOT NULL,
-	"nome_setor" VARCHAR(50) NOT NULL,
+	"nome_setor" VARCHAR(50) NOT NULL UNIQUE,
 	"desc_setor" VARCHAR(255),
 	PRIMARY KEY("setor_ID" AUTOINCREMENT)
 );
@@ -8,13 +8,19 @@ CREATE TABLE IF NOT EXISTS "Setor" (
 CREATE TABLE IF NOT EXISTS "Funcionario" (
 	"funcionario_ID" INTEGER NOT NULL,
 	"nome"	VARCHAR(50) NOT NULL,
-	"dt_nasc" DATE NOT NULL,
-	"CPF" VARCHAR(14) NOT NULL,
-	"telefone" VARCHAR(20),
 	"email"	VARCHAR(100),
 	"setor_ID" INTEGER NOT NULL,
 	PRIMARY KEY("funcionario_ID" AUTOINCREMENT),
 	FOREIGN KEY("setor_ID") REFERENCES "Setor"("setor_ID")
+);
+
+CREATE TABLE IF NOT EXISTS "Usuario" (
+	"usuario_ID" INTEGER NOT NULL,
+	"nome_usuario" VARCHAR(50) NOT NULL UNIQUE,
+	"senha" VARCHAR(50) NOT NULL,
+	"funcionario_ID" INTEGER NOT NULL,
+	PRIMARY KEY("usuario_ID" AUTOINCREMENT)
+	FOREIGN KEY("funcionario_ID") REFERENCES "Funcionario"("funcionario_ID") ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS "Local" (
