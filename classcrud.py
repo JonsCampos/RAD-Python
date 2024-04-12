@@ -1,6 +1,7 @@
 import sqlite3 as conector
 import tkinter as tk
 from tkinter import messagebox as mb
+import menu
 
 #--------------------------------------------------------------------------
 # Classes
@@ -90,6 +91,18 @@ class Local:
     def getNomeLocal(self):
         return self.__nomeLocal
 
+class Login:
+    def __init__(self, lgnUsuario, lgnSenha):
+        self.__lgnUsuario = lgnUsuario
+        self.__lgnSenha = lgnSenha
+    
+    def getUsuario(self):
+         return self.__lgnUsuario
+
+    def getSenha(self):
+         return self.__lgnSenha
+
+
 #--------------------------------------------------------------------------
 # Abrir Conexão
 #--------------------------------------------------------------------------
@@ -118,7 +131,7 @@ def verificarFuncionario(IDFuncionario, cursor):  # Verifica se funcionário exi
     selectFunc = cursor.fetchone()[0]
     return selectFunc
 
-def verificarEmailFuncionario(emailFuncionario, cursor):  # Verifica se funcionário existe
+def verificarEmailFuncionario(emailFuncionario, cursor):  # Verifica se email existe
     cursor.execute('SELECT COUNT(*) FROM funcionario WHERE email = ?', (emailFuncionario, ))
     selectemailFuncionario = cursor.fetchone()[0]
     return selectemailFuncionario
@@ -400,14 +413,11 @@ def verificarNomeFuncionario(nomeFuncionario, cursor):   # Verificar nome do fun
     cursor.execute('SELECT COUNT(*) FROM funcionario WHERE nome = ?', (nomeFuncionario, ))
     selectNomeFuncionario = cursor.fetchone()[0]
     return selectNomeFuncionario
-
-
         
 def pegarIDSetor(setor, cursor):    # Pega o ID do setor selecionado
     cursor.execute('SELECT setor_ID FROM Setor WHERE nome_setor = ?', (setor['values'][setor.current()], ))
     selectSetor_ID = cursor.fetchone()[0]
-    return selectSetor_ID
-        
+    return selectSetor_ID       
 
 def insertFuncionario(nomeFuncionario, emailFuncionario, setorFuncionario, treeFuncionario):   # Insert tabela Funcionario
     try:
@@ -836,11 +846,39 @@ def deleteLocal(IDLocal, treeLocal): # Delete tabela Local
 #--------------------------------------------------------------------------
 # Main - Login
 #--------------------------------------------------------------------------
+def verificarLgnUsuario(lgnUsuario, cursor):    # Verifica Login Usuario
+    cursor.execute('SELECT COUNT(*) FROM usuario WHERE nome_usuario = ?', (lgnUsuario, ))
+    selectLgnUsuario = cursor.fetchone()[0]
+    return selectLgnUsuario
 
+def verificarLgnSenha(lgnUsuario, cursor):    # Verifica Login Senha
+    cursor.execute('SELECT senha FROM usuario WHERE nome_usuario = ?', (lgnUsuario, ))
+    selectLgnSenha = cursor.fetchone()[0]
+    return selectLgnSenha
 
+def entrar(lgnUsuario, lgnSenha, janelaMain):
+    try:
+        conexao, cursor = abrirConexao()
+        # Instância da classe Login
+        login = Login(lgnUsuario.get(), lgnSenha.get())
+        # Verificação Login
+        selectLgnUsuario = verificarLgnUsuario(login.getUsuario(), cursor)
+        if selectLgnUsuario == 0:
+            mb.showerror('Erro', 'Usuário e/ou senha inválidos')
+            return
+        else:
+            selectLgnSenha = verificarLgnSenha(login.getUsuario(), cursor)
+            if selectLgnSenha != login.getSenha():
+                mb.showerror('Erro', 'Usuário e/ou senha inválidos')
+                return
 
+        menu.menu(janelaMain)
 
-
+    except conector.Error as erro:
+            mb.showerror('Erro', f'Erro ao se conectar com o banco de dados: {erro}')
+    finally:
+        if (conexao):
+            conexao, cursor = fecharConexao(conexao, cursor)
 
 #--------------------------------------------------------------------------
 # Tabelas

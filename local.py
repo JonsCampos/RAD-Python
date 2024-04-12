@@ -1,65 +1,74 @@
 import tkinter as tk
 from tkinter import ttk, messagebox as mb
 import classcrud
+import menu
 
-# Janela
-janelaLocal = tk.Tk()
-posx, posy = int((janelaLocal.winfo_screenwidth()-800)/2), int((janelaLocal.winfo_screenheight()-500)/2)
-janelaLocal.geometry(f'800x500+{posx}+{posy}')
-janelaLocal.title('Sistema de Controle de acesso')
+def local(janelaMenu):
+    if (janelaMenu):
+        janelaMenu.destroy()
 
-# Criação das tabelas (caso não exista)
-classcrud.tabelas()
+    # Janela
+    janelaLocal = tk.Tk()
+    x, y = 800, 600
+    posx, posy = int((janelaLocal.winfo_screenwidth()-x)/2), int((janelaLocal.winfo_screenheight()-y)/2)
+    janelaLocal.geometry(f'{x}x{y}+{posx}+{posy}')
+    janelaLocal.minsize(x, y)
+    janelaLocal.maxsize(x, y)
+    janelaLocal.iconbitmap('icon.ico')
+    janelaLocal.title('Sistema de Controle de acesso')
 
-# Título
-ttk.Label(janelaLocal, text='Local', font=(12)).place(x=379, y=7, width=41)
+    # Criação das tabelas (caso não exista)
+    classcrud.tabelas()
 
-# Entry - ID do local
-labelIDL = ttk.Label(text='ID do local')
-labelIDL.place(x=200, y=60)
-IDLocal = tk.Entry(janelaLocal)
-IDLocal.place(x=200, y=80, width=120)
+    # Título
+    ttk.Label(janelaLocal, text='Locais', font=(12)).place(relx=0.5, rely=0.05, anchor=tk.CENTER)
 
-# Entry - Nome do local
-labelNLocal = ttk.Label(text='Nome do local')
-labelNLocal.place(x=480, y=60)
-nomeLocal = tk.Entry(janelaLocal)
-nomeLocal.place(x=480, y=80, width=120)
+    # Entry - ID do local
+    labelIDL = ttk.Label(text='ID do local')
+    labelIDL.place(relx=0.33, rely=0.18, anchor=tk.CENTER)
+    IDLocal = tk.Entry(janelaLocal)
+    IDLocal.place(relx=0.33, rely=0.23, anchor=tk.CENTER)
 
-# TreeView
-colunas = ('ID', 'Nome')            
-treeLocal = ttk.Treeview(janelaLocal,columns=colunas, selectmode='browse')
-treeLocal['show'] = 'headings'
-# Scrollbar
-scroll = ttk.Scrollbar(janelaLocal, orient='vertical', command=treeLocal.yview)        
-scroll.pack(side ='right', fill ='x')
-treeLocal.configure(yscrollcommand=scroll.set)
-scroll.place(x=542, y=230, height=225)
-# Cabeçalho
-treeLocal.heading('ID', text='ID')
-treeLocal.heading('Nome', text='Nome')
-# Colunas
-treeLocal.column('ID',minwidth=0,width=140)
-treeLocal.column('Nome',minwidth=0,width=140)
-treeLocal.place(x=260, y=230)
+    # Entry - Nome do local
+    labelNLocal = ttk.Label(text='Nome')
+    labelNLocal.place(relx=0.66, rely=0.18, anchor=tk.CENTER)
+    nomeLocal = tk.Entry(janelaLocal)
+    nomeLocal.place(relx=0.66, rely=0.23, anchor=tk.CENTER)
 
-# Button - Inserir
-inserirbtn = tk.Button(janelaLocal, text='Inserir', command=lambda: classcrud.insertLocal(nomeLocal, treeLocal))
-inserirbtn.place(x=200, y=140)
+    # TreeView
+    colunas = ('ID', 'Nome')            
+    treeLocal = ttk.Treeview(janelaLocal,columns=colunas, selectmode='browse')
+    treeLocal['show'] = 'headings'
+    # Scrollbar
+    scroll = ttk.Scrollbar(janelaLocal, orient='vertical', command=treeLocal.yview)        
+    scroll.pack(side ='right', fill ='x')
+    treeLocal.configure(yscrollcommand=scroll.set)
+    scroll.place(relx=0.686, rely=0.7, anchor=tk.CENTER, height=224)
+    # Cabeçalho
+    treeLocal.heading('ID', text='ID')
+    treeLocal.heading('Nome', text='Nome')
+    # Colunas
+    treeLocal.column('ID',minwidth=0,width=140)
+    treeLocal.column('Nome',minwidth=0,width=140)
+    treeLocal.place(relx=0.5, rely=0.7, anchor=tk.CENTER)
 
-# Button - Atualizar
-atualizarbtn = tk.Button(janelaLocal, text='Atualizar', command=lambda: classcrud.updateLocal(IDLocal, nomeLocal, treeLocal))
-atualizarbtn.place(x=371.5, y=140)
+    # Button - Inserir
+    inserirbtn = tk.Button(janelaLocal, text='Inserir', command=lambda: classcrud.insertLocal(nomeLocal, treeLocal))
+    inserirbtn.place(relx=0.25, rely=0.38, anchor=tk.CENTER)
 
-# Button - Remover
-removerbtn = tk.Button(janelaLocal, text='Remover', command=lambda: classcrud.deleteLocal(IDLocal, treeLocal))
-removerbtn.place(x=543, y=140)
+    # Button - Atualizar
+    atualizarbtn = tk.Button(janelaLocal, text='Atualizar', command=lambda: classcrud.updateLocal(IDLocal, nomeLocal, treeLocal))
+    atualizarbtn.place(relx=0.50, rely=0.38, anchor=tk.CENTER)
 
-# Button - Voltar
-inserirbtn = tk.Button(janelaLocal, text='Voltar', command=lambda: janelaLocal.destroy())
-inserirbtn.place(x=7, y=7)
+    # Button - Remover
+    removerbtn = tk.Button(janelaLocal, text='Remover', command=lambda: classcrud.deleteLocal(IDLocal, treeLocal))
+    removerbtn.place(relx=0.75, rely=0.38, anchor=tk.CENTER)
 
-# Atualização TreeView
-classcrud.attTreeLocal(treeLocal)
+    # Button - Voltar
+    inserirbtn = tk.Button(janelaLocal, text='Voltar', command=lambda: menu.menu(janelaLocal))
+    inserirbtn.place(relx=0.05, rely=0.05, anchor=tk.CENTER)
 
-janelaLocal.mainloop()
+    # Atualização TreeView
+    classcrud.attTreeLocal(treeLocal)
+
+    janelaLocal.mainloop()

@@ -1,79 +1,88 @@
 import tkinter as tk
 from tkinter import ttk, messagebox as mb
 import classcrud
+import menu
 
-# Janela
-janelaUsuario = tk.Tk()
-posx, posy = int((janelaUsuario.winfo_screenwidth()-800)/2), int((janelaUsuario.winfo_screenheight()-500)/2)
-janelaUsuario.geometry(f'800x500+{posx}+{posy}')
-janelaUsuario.title('Sistema de Controle de acesso')
+def usuario(janelaMenu):
+    if (janelaMenu):
+        janelaMenu.destroy()
 
-# Criação das tabelas (caso não exista)
-classcrud.tabelas()
+    # Janela
+    janelaUsuario = tk.Tk()
+    x, y = 800, 600
+    posx, posy = int((janelaUsuario.winfo_screenwidth()-x)/2), int((janelaUsuario.winfo_screenheight()-y)/2)
+    janelaUsuario.geometry(f'{x}x{y}+{posx}+{posy}')
+    janelaUsuario.minsize(x, y)
+    janelaUsuario.maxsize(x, y)
+    janelaUsuario.iconbitmap('icon.ico')
+    janelaUsuario.title('Sistema de Controle de acesso')
 
-# Título
-ttk.Label(janelaUsuario, text='Usuários', font=(12)).place(x=367, y=7, width=65)
+    # Criação das tabelas (caso não exista)
+    classcrud.tabelas()
 
-# Entry - ID Usuário
-labelIDUsu = ttk.Label(text='ID do usuário')
-labelIDUsu.place(x=60, y=60)
-IDUsuario = tk.Entry(janelaUsuario)
-IDUsuario.place(x=60, y=80, width=120)
+    # Título
+    ttk.Label(janelaUsuario, text='Usuários', font=(12)).place(relx=0.5, rely=0.05, anchor=tk.CENTER)
 
-# Entry - Nome usuário
-labelNUsuario = ttk.Label(text='Nome de usuário')
-labelNUsuario.place(x=240, y=60)
-nomeUsuario = tk.Entry(janelaUsuario)
-nomeUsuario.place(x=240, y=80, width=120)
+    # Entry - ID Usuário
+    labelIDUsu = ttk.Label(text='ID do usuário')
+    labelIDUsu.place(relx=0.2, rely=0.18, anchor=tk.CENTER)
+    IDUsuario = tk.Entry(janelaUsuario)
+    IDUsuario.place(relx=0.2, rely=0.23, anchor=tk.CENTER)
 
-# Entry - Senha
-labelSenha = ttk.Label(text='Senha')
-labelSenha.place(x=420, y=60)
-senhaUsuario = tk.Entry(janelaUsuario, show='*')
-senhaUsuario.place(x=420, y=80, width=120)
+    # Entry - Nome usuário
+    labelNUsuario = ttk.Label(text='Nome de usuário')
+    labelNUsuario.place(relx=0.4, rely=0.18, anchor=tk.CENTER)
+    nomeUsuario = tk.Entry(janelaUsuario)
+    nomeUsuario.place(relx=0.4, rely=0.23, anchor=tk.CENTER)
 
-# Entry - ID Funcionário
-labelSenha = ttk.Label(text='ID do funcionário')
-labelSenha.place(x=600, y=60)
-IDFuncionario = tk.Entry(janelaUsuario)
-IDFuncionario.place(x=600, y=80, width=120)
+    # Entry - Senha
+    labelSenha = ttk.Label(text='Senha')
+    labelSenha.place(relx=0.6, rely=0.18, anchor=tk.CENTER)
+    senhaUsuario = tk.Entry(janelaUsuario, show='*')
+    senhaUsuario.place(relx=0.6, rely=0.23, anchor=tk.CENTER)
 
-# TreeView
-colunas = ('ID', 'Nome de usuário', 'Funcionário')            
-treeUsuario = ttk.Treeview(janelaUsuario,columns=colunas, selectmode='browse')
-treeUsuario['show'] = 'headings'
-# Scrollbar
-scroll = ttk.Scrollbar(janelaUsuario, orient='vertical', command=treeUsuario.yview)        
-scroll.pack(side ='right', fill ='x')
-treeUsuario.configure(yscrollcommand=scroll.set)
-scroll.place(x=591, y=230, height=225)
-# Cabeçalho
-treeUsuario.heading('ID', text='ID')
-treeUsuario.heading('Nome de usuário', text='Nome de usuário')
-treeUsuario.heading('Funcionário', text='Funcionário')
-# Colunas
-treeUsuario.column('ID',minwidth=0,width=100)
-treeUsuario.column('Nome de usuário',minwidth=0,width=140)
-treeUsuario.column('Funcionário',minwidth=0,width=140)
-treeUsuario.place(x=209, y=230)
+    # Entry - ID Funcionário
+    labelSenha = ttk.Label(text='ID do funcionário')
+    labelSenha.place(relx=0.8, rely=0.18, anchor=tk.CENTER)
+    IDFuncionario = tk.Entry(janelaUsuario)
+    IDFuncionario.place(relx=0.8, rely=0.23, anchor=tk.CENTER)
 
-# Button - Inserir
-inserirbtn = tk.Button(janelaUsuario, text='Inserir', command=lambda: classcrud.insertUsuario(nomeUsuario, senhaUsuario, IDFuncionario , treeUsuario))
-inserirbtn.place(x=200, y=140)
+    # TreeView
+    colunas = ('ID', 'Nome de usuário', 'Funcionário')            
+    treeUsuario = ttk.Treeview(janelaUsuario,columns=colunas, selectmode='browse')
+    treeUsuario['show'] = 'headings'
+    # Scrollbar
+    scroll = ttk.Scrollbar(janelaUsuario, orient='vertical', command=treeUsuario.yview)        
+    scroll.pack(side ='right', fill ='x')
+    treeUsuario.configure(yscrollcommand=scroll.set)
+    scroll.place(relx=0.749, rely=0.7, anchor=tk.CENTER, height=224)
+    # Cabeçalho
+    treeUsuario.heading('ID', text='ID')
+    treeUsuario.heading('Nome de usuário', text='Nome de usuário')
+    treeUsuario.heading('Funcionário', text='Funcionário')
+    # Colunas
+    treeUsuario.column('ID',minwidth=0,width=100)
+    treeUsuario.column('Nome de usuário',minwidth=0,width=140)
+    treeUsuario.column('Funcionário',minwidth=0,width=140)
+    treeUsuario.place(relx=0.5, rely=0.7, anchor=tk.CENTER)
 
-# Button - Atualizar
-atualizarbtn = tk.Button(janelaUsuario, text='Atualizar', command=lambda: classcrud.updateUsuario(IDUsuario, nomeUsuario, senhaUsuario, treeUsuario))
-atualizarbtn.place(x=371.5, y=140)
+    # Button - Inserir
+    inserirbtn = tk.Button(janelaUsuario, text='Inserir', command=lambda: classcrud.insertUsuario(nomeUsuario, senhaUsuario, IDFuncionario , treeUsuario))
+    inserirbtn.place(relx=0.25, rely=0.38, anchor=tk.CENTER)
 
-# Button - Remover
-removerbtn = tk.Button(janelaUsuario, text='Remover', command=lambda: classcrud.deleteUsuario(IDUsuario, treeUsuario))
-removerbtn.place(x=543, y=140)
+    # Button - Atualizar
+    atualizarbtn = tk.Button(janelaUsuario, text='Atualizar', command=lambda: classcrud.updateUsuario(IDUsuario, nomeUsuario, senhaUsuario, treeUsuario))
+    atualizarbtn.place(relx=0.50, rely=0.38, anchor=tk.CENTER)
 
-# Button - Voltar
-inserirbtn = tk.Button(janelaUsuario, text='Voltar', command=lambda: janelaUsuario.destroy())
-inserirbtn.place(x=7, y=7)
+    # Button - Remover
+    removerbtn = tk.Button(janelaUsuario, text='Remover', command=lambda: classcrud.deleteUsuario(IDUsuario, treeUsuario))
+    removerbtn.place(relx=0.75, rely=0.38, anchor=tk.CENTER)
 
-# Atualização TreeView
-classcrud.attTreeUsuario(treeUsuario)
+    # Button - Voltar
+    inserirbtn = tk.Button(janelaUsuario, text='Voltar', command=lambda: menu.menu(janelaUsuario))
+    inserirbtn.place(relx=0.05, rely=0.05, anchor=tk.CENTER)
 
-janelaUsuario.mainloop()
+    # Atualização TreeView
+    classcrud.attTreeUsuario(treeUsuario)
+
+    janelaUsuario.mainloop()
