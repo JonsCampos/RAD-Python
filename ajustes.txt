@@ -1,0 +1,7 @@
+ajustar todas as telas
+
+descrição setor
+
+update usuario nome igual e senha diferente
+
+apagar entrys depois de inserir no acesso
