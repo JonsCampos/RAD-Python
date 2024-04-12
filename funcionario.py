@@ -16,22 +16,29 @@ ttk.Label(janelaFuncionario, text='Funcionários', font=(12)).place(x=349, y=7, 
 
 # Entry - ID do funcionário
 labelIDF = ttk.Label(text='ID do Funcionário')
-labelIDF.place(x=180, y=60)
+labelIDF.place(x=110, y=60)
 IDFuncionario = tk.Entry(janelaFuncionario)
-IDFuncionario.place(x=180, y=80, width=120)
+IDFuncionario.place(x=110, y=80, width=120)
 
 # Entry - Nome do funcionário
 labelNFuncionario = ttk.Label(text='Nome do Funcionário')
-labelNFuncionario.place(x=340, y=60)
+labelNFuncionario.place(x=270, y=60)
 nomeFuncionario = tk.Entry(janelaFuncionario)
-nomeFuncionario.place(x=340, y=80, width=120)
+nomeFuncionario.place(x=270, y=80, width=120)
 
-# Entry - ComboBox do funcionário
+# Entry - E-mail do funcionário
+labelEmailFuncionario = ttk.Label(text='E-Mail do Funcionário')
+labelEmailFuncionario.place(x=430, y=60)
+emailFuncionario = tk.Entry(janelaFuncionario)
+emailFuncionario.place(x=430, y=80, width=120)
+
+# Entry - ComboBox do setor do funcionário
 labelSFuncionario = ttk.Label(text='Setor do Funcionário')
-labelSFuncionario.place(x=500, y=60)
+labelSFuncionario.place(x=590, y=60)
 setorFuncionario = ttk.Combobox(janelaFuncionario, state='readonly')
-setorFuncionario.place(x=500, y=80, width=120)
+setorFuncionario.place(x=590, y=80, width=120)
 
+# Preenchimento do ComboBox de Setor
 registros = classcrud.fillComboboxSetor()
 if registros == []:
     setorFuncionario['values'] = ['Sem registros']
@@ -40,7 +47,7 @@ else:
 setorFuncionario.current(0)
 
 # TreeView
-colunas = ('ID', 'Nome', 'Setor')            
+colunas = ('ID', 'Nome', 'Email', 'Setor')            
 treeFuncionario = ttk.Treeview(janelaFuncionario,columns=colunas, selectmode='browse')
 treeFuncionario['show'] = 'headings'
 
@@ -48,25 +55,27 @@ treeFuncionario['show'] = 'headings'
 scroll = ttk.Scrollbar(janelaFuncionario, orient='vertical', command=treeFuncionario.yview)        
 scroll.pack(side ='right', fill ='x')
 treeFuncionario.configure(yscrollcommand=scroll.set)
-scroll.place(x=612, y=230, height=225)
+scroll.place(x=672, y=230, height=225)
 
 # Cabeçalho
 treeFuncionario.heading('ID', text='ID')
 treeFuncionario.heading('Nome', text='Nome')
+treeFuncionario.heading ('Email', text='E-mail')
 treeFuncionario.heading ('Setor', text='Setor')
 
 # Colunas
 treeFuncionario.column('ID',minwidth=0,width=140)
 treeFuncionario.column('Nome',minwidth=0,width=140)
+treeFuncionario.column('Email',minwidth=0,width=140)
 treeFuncionario.column('Setor',minwidth=0,width=140)
-treeFuncionario.place(x=190, y=230)
+treeFuncionario.place(x=110, y=230)
 
 # Button - Inserir
-inserirbtn = tk.Button(janelaFuncionario, text='Inserir', command=lambda: classcrud.insertFuncionario(nomeFuncionario, treeFuncionario))
+inserirbtn = tk.Button(janelaFuncionario, text='Inserir', command=lambda: classcrud.insertFuncionario(nomeFuncionario, emailFuncionario, setorFuncionario, treeFuncionario))
 inserirbtn.place(x=200, y=140)
 
 # Button - Atualizar
-atualizarbtn = tk.Button(janelaFuncionario, text='Atualizar', command=lambda: classcrud.updateFuncionario(IDFuncionario, nomeFuncionario, treeFuncionario))
+atualizarbtn = tk.Button(janelaFuncionario, text='Atualizar', command=lambda: classcrud.updateFuncionario(IDFuncionario, nomeFuncionario, emailFuncionario, setorFuncionario, treeFuncionario))
 atualizarbtn.place(x=371.5, y=140)
 
 # Button - Remover
