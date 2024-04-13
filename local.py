@@ -65,8 +65,8 @@ def local(janelaMenu):
     removerbtn.place(relx=0.75, rely=0.33, anchor=tk.CENTER)
 
     # Button - Voltar
-    inserirbtn = tk.Button(janelaLocal, text='Voltar', command=lambda: menu.menu(janelaLocal))
-    inserirbtn.place(relx=0.05, rely=0.05, anchor=tk.CENTER)
+    voltarbtn = tk.Button(janelaLocal, text='Voltar', command=lambda: menu.menu(janelaLocal))
+    voltarbtn.place(relx=0.05, rely=0.05, anchor=tk.CENTER)
 
     # Atualização TreeView
     classcrud.attTreeLocal(treeLocal)
