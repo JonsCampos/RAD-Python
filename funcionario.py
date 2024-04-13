@@ -89,8 +89,8 @@ def funcionario(janelaMenu):
     removerbtn.place(relx=0.75, rely=0.33, anchor=tk.CENTER)
 
     # Button - Voltar
-    inserirbtn = tk.Button(janelaFuncionario, text='Voltar', command=lambda: menu.menu(janelaFuncionario))
-    inserirbtn.place(relx=0.05, rely=0.05, anchor=tk.CENTER)
+    voltarbtn = tk.Button(janelaFuncionario, text='Voltar', command=lambda: menu.menu(janelaFuncionario))
+    voltarbtn.place(relx=0.05, rely=0.05, anchor=tk.CENTER)
 
     # Atualização TreeView
     classcrud.attTreeFuncionario(treeFuncionario)
