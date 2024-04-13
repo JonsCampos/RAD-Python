@@ -73,8 +73,8 @@ def setor(janelaMenu):
     removerbtn.place(relx=0.75, rely=0.33, anchor=tk.CENTER)
 
     # Button - Voltar
-    inserirbtn = tk.Button(janelaSetor, text='Voltar', command=lambda: menu.menu(janelaSetor))
-    inserirbtn.place(relx=0.05, rely=0.05, anchor=tk.CENTER)
+    voltarbtn = tk.Button(janelaSetor, text='Voltar', command=lambda: menu.menu(janelaSetor))
+    voltarbtn.place(relx=0.05, rely=0.05, anchor=tk.CENTER)
 
     # Atualização TreeView
     classcrud.attTreeSetor(treeSetor)
