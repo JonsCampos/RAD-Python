@@ -78,8 +78,8 @@ def acesso(janelaMenu):
     inserirbtn.place(relx=0.25, rely=0.33, anchor=tk.CENTER)
 
     # Button - Voltar
-    inserirbtn = tk.Button(janelaAcesso, text='Voltar', command=lambda: menu.menu(janelaAcesso))
-    inserirbtn.place(relx=0.05, rely=0.05, anchor=tk.CENTER)
+    voltarbtn = tk.Button(janelaAcesso, text='Voltar', command=lambda: menu.menu(janelaAcesso))
+    voltarbtn.place(relx=0.05, rely=0.05, anchor=tk.CENTER)
 
     # Atualização TreeView
     classcrud.attTreeAcesso(treeAcessos)
