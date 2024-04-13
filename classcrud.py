@@ -22,11 +22,17 @@ class Setor:
     def setNomeSetor(self, nomeSetor):
         self.__nomeSetor = nomeSetor
 
+    def setDescSetor(self, descSetor):
+        self.__descSetor = descSetor
+
     def getIDSetor(self):
         return self.__IDSetor
 
     def getNomeSetor(self):
         return self.__nomeSetor
+
+    def getDescSetor(self):
+        return self.__descSetor
 
 class Funcionario:    
     def setIDFuncionario(self, IDFuncionario):
@@ -196,7 +202,7 @@ def insertAcesso(IDFunc, local, tipo, treeAcessos):   # Insert tabela Acesso
             return
         # ID do local
         if local['values'][0] == 'Sem registros':
-            mb.showerror('Erro', 'Local não encontrada')
+            mb.showerror('Erro', 'Local não encontrado')
             return
         else:
             selectLocal_ID = pegarIDLocal(local, cursor)
@@ -214,6 +220,7 @@ def insertAcesso(IDFunc, local, tipo, treeAcessos):   # Insert tabela Acesso
     except conector.Error as erro:
             mb.showerror('Erro', f'Erro ao inserir os dados: {erro}')
     finally:
+        IDFunc.delete(0, tk.END)
         if (conexao):
             conexao, cursor = fecharConexao(conexao, cursor)
         # Atualização TreeView
@@ -236,12 +243,18 @@ def attTreeSetor(treeSetor):       # Atualização TreeView
         for registro in registros:
             treeID = registro[0]
             treeNome = registro[1]
-            treeSetor.insert('', 'end', values=(treeID, treeNome))           
+            treeDesc = registro[2]
+            treeSetor.insert('', 'end', values=(treeID, treeNome, treeDesc))           
     except conector.Error as erro:
             mb.showerror('Erro', f'Erro ao exibir os setores: {erro}')
     finally:
         if (conexao):
             conexao, cursor = fecharConexao(conexao, cursor)
+
+def verificarUpdateNomeSetor(IDSetor, cursor):
+    cursor.execute('SELECT nome_setor FROM setor WHERE setor_ID = ?', (IDSetor, ))
+    selectNomeSetorID = cursor.fetchone()[0]
+    return selectNomeSetorID
 
 def verificarSetor(IDSetor, cursor):    # Verifica se setor existe
     cursor.execute('SELECT COUNT(*) FROM setor WHERE setor_ID = ?', (IDSetor, ))
@@ -253,7 +266,7 @@ def verificarNomeSetor(nomeSetor, cursor):   # Verificar nome do setor repetido
     selectNomeSetor = cursor.fetchone()[0]
     return selectNomeSetor
 
-def insertSetor(nomeSetor, treeSetor):   # Insert tabela Setor
+def insertSetor(nomeSetor, descSetor, treeSetor):   # Insert tabela Setor
     try:
         conexao, cursor = abrirConexao()
         # Verificação nome do setor vazio
@@ -268,10 +281,11 @@ def insertSetor(nomeSetor, treeSetor):   # Insert tabela Setor
         # Instância da classe Setor
         setor = Setor()
         setor.setNomeSetor(nomeSetor.get())
+        setor.setDescSetor(descSetor.get())
         # Insert - Setor
-        comando = '''INSERT INTO setor (nome_setor) 
-                        VALUES (?);'''
-        cursor.execute(comando, (setor.getNomeSetor(), ))
+        comando = '''INSERT INTO setor (nome_setor, desc_setor) 
+                        VALUES (?, ?);'''
+        cursor.execute(comando, (setor.getNomeSetor(), setor.getDescSetor()))
         # Messagebox - Confirmação
         if mb.askyesno('Confirmação', 'Confirmar inserção?'):
             conexao.commit()
@@ -281,12 +295,13 @@ def insertSetor(nomeSetor, treeSetor):   # Insert tabela Setor
             mb.showerror('Erro', f'Erro ao inserir os dados: {erro}')
     finally:
         nomeSetor.delete(0, tk.END)
+        descSetor.delete(0, tk.END)
         if (conexao):
             conexao, cursor = fecharConexao(conexao, cursor)
         # Atualização TreeView
         attTreeSetor(treeSetor)
 
-def updateSetor(IDSetor, nomeSetor, treeSetor):  # Update tabela Setor
+def updateSetor(IDSetor, nomeSetor, descSetor, treeSetor):  # Update tabela Setor
     try:
         conexao, cursor = abrirConexao()
         # Verificação ID
@@ -298,20 +313,30 @@ def updateSetor(IDSetor, nomeSetor, treeSetor):  # Update tabela Setor
         if nomeSetor.get() == '':
             mb.showerror('Erro', 'Nome inválido')
             return
+
+
+
         # Verificação nome do setor
         selectNomeSetor = verificarNomeSetor(nomeSetor.get(), cursor)
         if selectNomeSetor != 0:
-            mb.showerror('Erro', 'Setor já registrado\nTente outro nome')
-            return
+            selectNomeSetorID = verificarUpdateNomeSetor(IDSetor.get(), cursor)
+            if selectNomeSetorID != nomeSetor.get():
+                mb.showerror('Erro', 'Setor já registrado\nTente outro nome')
+                return
+
+
+
+
         # Instância da classe Setor
         setor = Setor()
         setor.setIDSetor(IDSetor.get())
         setor.setNomeSetor(nomeSetor.get())
+        setor.setDescSetor(descSetor.get())
         # Update - Setor
         comando = '''UPDATE Setor
-                        SET nome_setor = (?)
+                        SET nome_setor = (?), desc_setor = (?)
                         WHERE setor_ID = (?);'''
-        cursor.execute(comando, (setor.getNomeSetor(), setor.getIDSetor()))
+        cursor.execute(comando, (setor.getNomeSetor(), setor.getDescSetor(), setor.getIDSetor()))
         # Messagebox - Confirmação
         if mb.askyesno('Confirmação', 'Confirmar Atualização?'):
             conexao.commit()
@@ -321,6 +346,7 @@ def updateSetor(IDSetor, nomeSetor, treeSetor):  # Update tabela Setor
             mb.showerror('Erro', f'Erro ao atualizar os dados: {erro}')
     finally:
         nomeSetor.delete(0, tk.END)
+        descSetor.delete(0, tk.END)
         IDSetor.delete(0, tk.END)
         if (conexao):
             conexao, cursor = fecharConexao(conexao, cursor)
@@ -428,7 +454,7 @@ def insertFuncionario(nomeFuncionario, emailFuncionario, setorFuncionario, treeF
             return
         
         if setorFuncionario['values'][0] == 'Sem registros':
-            mb.showerror('Erro', 'Local não encontrada')
+            mb.showerror('Erro', 'Local não encontrado')
             return
         else:
             selectSetor_ID = pegarIDSetor(setorFuncionario, cursor)
@@ -471,7 +497,7 @@ def updateFuncionario(IDFuncionario, nomeFuncionario, emailFuncionario, setorFun
             return
         
         if setorFuncionario['values'][0] == 'Sem registros':
-            mb.showerror('Erro', 'Local não encontrada')
+            mb.showerror('Erro', 'Local não encontrado')
             return
         else:
             selectSetor_ID = pegarIDSetor(setorFuncionario, cursor)
@@ -562,6 +588,11 @@ def attTreeUsuario(treeUsuario):       # Atualização TreeView
         if (conexao):
             conexao, cursor = fecharConexao(conexao, cursor)
 
+def verificarUpdateNomeUsuario(IDUsuario, cursor):
+    cursor.execute('SELECT nome_usuario FROM usuario WHERE usuario_ID = ?', (IDUsuario, ))
+    selectNomeUsuID = cursor.fetchone()[0]
+    return selectNomeUsuID
+
 def verificarUsuario(IDUsuario, cursor):    # Verifica se usuario existe
     cursor.execute('SELECT COUNT(*) FROM usuario WHERE usuario_ID = ?', (IDUsuario, ))
     selectID = cursor.fetchone()[0]
@@ -644,11 +675,22 @@ def updateUsuario(IDUsuario, nomeUsuario, senhaUsuario, treeUsuario):  # Update 
         if nomeUsuario.get() == '':
             mb.showerror('Erro', 'Nome de usuário inválido')
             return
+
+
+
         # Verificação nome do usuário
         selectNomeUsuario = verificarNomeUsuario(nomeUsuario.get(), cursor)
         if selectNomeUsuario != 0:
-            mb.showerror('Erro', 'Usuário já registrado\nTente outro nome')
-            return
+            selectNomeUsuID = verificarUpdateNomeUsuario(IDUsuario.get(), cursor)
+            if selectNomeUsuID != nomeUsuario.get():
+                mb.showerror('Erro', 'Usuário já registrado\nTente outro nome')
+                return
+
+
+
+
+
+
         # Verificação senha vazia
         if senhaUsuario.get() == '':
             mb.showerror('Erro', 'Senha inválida')

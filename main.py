@@ -4,7 +4,7 @@ import classcrud
 
 # Janela
 janelaMain = tk.Tk()
-x, y = 800, 600
+x, y = 800, 500
 posx, posy = int((janelaMain.winfo_screenwidth()-x)/2), int((janelaMain.winfo_screenheight()-y)/2)
 janelaMain.geometry(f'{x}x{y}+{posx}+{posy}')
 janelaMain.minsize(x, y)

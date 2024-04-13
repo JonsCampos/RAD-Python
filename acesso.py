@@ -9,7 +9,7 @@ def acesso(janelaMenu):
 
     # Janela
     janelaAcesso = tk.Tk()
-    x, y = 800, 600
+    x, y = 800, 500
     posx, posy = int((janelaAcesso.winfo_screenwidth()-x)/2), int((janelaAcesso.winfo_screenheight()-y)/2)
     janelaAcesso.geometry(f'{x}x{y}+{posx}+{posy}')
     janelaAcesso.minsize(x, y)
@@ -25,13 +25,13 @@ def acesso(janelaMenu):
 
     # Entry - ID Funcionário
     labelFunc = ttk.Label(text='ID do funcionário')
-    labelFunc.place(relx=0.25, rely=0.18, anchor=tk.CENTER)
+    labelFunc.place(relx=0.25, rely=0.16, anchor=tk.CENTER)
     IDFunc = tk.Entry(janelaAcesso)
-    IDFunc.place(relx=0.25, rely=0.23, anchor=tk.CENTER)
+    IDFunc.place(relx=0.25, rely=0.21, anchor=tk.CENTER)
 
     # Combobox - Local
     labelLocal = ttk.Label(text='Local')
-    labelLocal.place(relx=0.50, rely=0.18, anchor=tk.CENTER)
+    labelLocal.place(relx=0.5, rely=0.16, anchor=tk.CENTER)
     local = ttk.Combobox(janelaAcesso, state='readonly')
     registros = classcrud.fillComboboxLocal()
     if registros == []:
@@ -39,16 +39,16 @@ def acesso(janelaMenu):
     else:
         local['values'] = [registro[0] for registro in registros]
     local.current(0)
-    local.place(relx=0.50, rely=0.23, anchor=tk.CENTER)
+    local.place(relx=0.5, rely=0.21, anchor=tk.CENTER)
 
     # Radiobutton - Tipo
     labelAcesso = ttk.Label(text='Tipo de acesso')
-    labelAcesso.place(relx=0.75, rely=0.18, anchor=tk.CENTER)
+    labelAcesso.place(relx=0.75, rely=0.16, anchor=tk.CENTER)
     tipo = tk.StringVar(value='Entrada')
     rb1 = tk.Radiobutton(janelaAcesso, text='Entrada', variable=tipo, value='Entrada')
-    rb1.place(relx=0.75, rely=0.23, anchor=tk.CENTER)
+    rb1.place(relx=0.75, rely=0.21, anchor=tk.CENTER)
     rb2 = tk.Radiobutton(janelaAcesso, text='Saída', variable=tipo, value='Saída')
-    rb2.place(relx=0.75, rely=0.28, anchor=tk.CENTER)
+    rb2.place(relx=0.75, rely=0.26, anchor=tk.CENTER)
 
     # TreeView
     colunas = ('Nome', 'Setor', 'Tipo', 'Local', 'Data - Hora')            
@@ -66,16 +66,16 @@ def acesso(janelaMenu):
     treeAcessos.heading('Local', text='Local') 
     treeAcessos.heading('Data - Hora', text='Data - Hora')  
     # Colunas
-    treeAcessos.column('Nome',minwidth=0,width=140)
-    treeAcessos.column('Setor',minwidth=0,width=140)
-    treeAcessos.column('Tipo',minwidth=0,width=140)
-    treeAcessos.column('Local',minwidth=0,width=140)
-    treeAcessos.column('Data - Hora',minwidth=0,width=150)
+    treeAcessos.column('Nome',minwidth=0,width=140, anchor=tk.CENTER)
+    treeAcessos.column('Setor',minwidth=0,width=140, anchor=tk.CENTER)
+    treeAcessos.column('Tipo',minwidth=0,width=140, anchor=tk.CENTER)
+    treeAcessos.column('Local',minwidth=0,width=140, anchor=tk.CENTER)
+    treeAcessos.column('Data - Hora',minwidth=0,width=150, anchor=tk.CENTER)
     treeAcessos.place(relx=0.5, rely=0.7, anchor=tk.CENTER)
 
     # Button - Inserir
     inserirbtn = tk.Button(janelaAcesso, text='Inserir', command=lambda: classcrud.insertAcesso(IDFunc, local, tipo, treeAcessos))
-    inserirbtn.place(relx=0.25, rely=0.38, anchor=tk.CENTER)
+    inserirbtn.place(relx=0.25, rely=0.33, anchor=tk.CENTER)
 
     # Button - Voltar
     inserirbtn = tk.Button(janelaAcesso, text='Voltar', command=lambda: menu.menu(janelaAcesso))

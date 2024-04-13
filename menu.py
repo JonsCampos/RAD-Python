@@ -13,7 +13,7 @@ def menu(janela):
 
     # Janela
     janelaMenu = tk.Tk()
-    x, y = 800, 600
+    x, y = 800, 500
     posx, posy = int((janelaMenu.winfo_screenwidth()-x)/2), int((janelaMenu.winfo_screenheight()-y)/2)
     janelaMenu.geometry(f'{x}x{y}+{posx}+{posy}')
     janelaMenu.minsize(x, y)

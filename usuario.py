@@ -9,7 +9,7 @@ def usuario(janelaMenu):
 
     # Janela
     janelaUsuario = tk.Tk()
-    x, y = 800, 600
+    x, y = 800, 500
     posx, posy = int((janelaUsuario.winfo_screenwidth()-x)/2), int((janelaUsuario.winfo_screenheight()-y)/2)
     janelaUsuario.geometry(f'{x}x{y}+{posx}+{posy}')
     janelaUsuario.minsize(x, y)
@@ -25,27 +25,27 @@ def usuario(janelaMenu):
 
     # Entry - ID Usuário
     labelIDUsu = ttk.Label(text='ID do usuário')
-    labelIDUsu.place(relx=0.2, rely=0.18, anchor=tk.CENTER)
+    labelIDUsu.place(relx=0.2, rely=0.16, anchor=tk.CENTER)
     IDUsuario = tk.Entry(janelaUsuario)
-    IDUsuario.place(relx=0.2, rely=0.23, anchor=tk.CENTER)
+    IDUsuario.place(relx=0.2, rely=0.21, anchor=tk.CENTER)
 
     # Entry - Nome usuário
     labelNUsuario = ttk.Label(text='Nome de usuário')
-    labelNUsuario.place(relx=0.4, rely=0.18, anchor=tk.CENTER)
+    labelNUsuario.place(relx=0.4, rely=0.16, anchor=tk.CENTER)
     nomeUsuario = tk.Entry(janelaUsuario)
-    nomeUsuario.place(relx=0.4, rely=0.23, anchor=tk.CENTER)
+    nomeUsuario.place(relx=0.4, rely=0.21, anchor=tk.CENTER)
 
     # Entry - Senha
     labelSenha = ttk.Label(text='Senha')
-    labelSenha.place(relx=0.6, rely=0.18, anchor=tk.CENTER)
+    labelSenha.place(relx=0.6, rely=0.16, anchor=tk.CENTER)
     senhaUsuario = tk.Entry(janelaUsuario, show='*')
-    senhaUsuario.place(relx=0.6, rely=0.23, anchor=tk.CENTER)
+    senhaUsuario.place(relx=0.6, rely=0.21, anchor=tk.CENTER)
 
     # Entry - ID Funcionário
     labelSenha = ttk.Label(text='ID do funcionário')
-    labelSenha.place(relx=0.8, rely=0.18, anchor=tk.CENTER)
+    labelSenha.place(relx=0.8, rely=0.16, anchor=tk.CENTER)
     IDFuncionario = tk.Entry(janelaUsuario)
-    IDFuncionario.place(relx=0.8, rely=0.23, anchor=tk.CENTER)
+    IDFuncionario.place(relx=0.8, rely=0.21, anchor=tk.CENTER)
 
     # TreeView
     colunas = ('ID', 'Nome de usuário', 'Funcionário')            
@@ -61,22 +61,22 @@ def usuario(janelaMenu):
     treeUsuario.heading('Nome de usuário', text='Nome de usuário')
     treeUsuario.heading('Funcionário', text='Funcionário')
     # Colunas
-    treeUsuario.column('ID',minwidth=0,width=100)
-    treeUsuario.column('Nome de usuário',minwidth=0,width=140)
-    treeUsuario.column('Funcionário',minwidth=0,width=140)
+    treeUsuario.column('ID',minwidth=0,width=100, anchor=tk.CENTER)
+    treeUsuario.column('Nome de usuário',minwidth=0,width=140, anchor=tk.CENTER)
+    treeUsuario.column('Funcionário',minwidth=0,width=140, anchor=tk.CENTER)
     treeUsuario.place(relx=0.5, rely=0.7, anchor=tk.CENTER)
 
     # Button - Inserir
     inserirbtn = tk.Button(janelaUsuario, text='Inserir', command=lambda: classcrud.insertUsuario(nomeUsuario, senhaUsuario, IDFuncionario , treeUsuario))
-    inserirbtn.place(relx=0.25, rely=0.38, anchor=tk.CENTER)
+    inserirbtn.place(relx=0.25, rely=0.33, anchor=tk.CENTER)
 
     # Button - Atualizar
     atualizarbtn = tk.Button(janelaUsuario, text='Atualizar', command=lambda: classcrud.updateUsuario(IDUsuario, nomeUsuario, senhaUsuario, treeUsuario))
-    atualizarbtn.place(relx=0.50, rely=0.38, anchor=tk.CENTER)
+    atualizarbtn.place(relx=0.50, rely=0.33, anchor=tk.CENTER)
 
     # Button - Remover
     removerbtn = tk.Button(janelaUsuario, text='Remover', command=lambda: classcrud.deleteUsuario(IDUsuario, treeUsuario))
-    removerbtn.place(relx=0.75, rely=0.38, anchor=tk.CENTER)
+    removerbtn.place(relx=0.75, rely=0.33, anchor=tk.CENTER)
 
     # Button - Voltar
     inserirbtn = tk.Button(janelaUsuario, text='Voltar', command=lambda: menu.menu(janelaUsuario))
