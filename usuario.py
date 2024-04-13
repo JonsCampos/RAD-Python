@@ -79,8 +79,8 @@ def usuario(janelaMenu):
     removerbtn.place(relx=0.75, rely=0.33, anchor=tk.CENTER)
 
     # Button - Voltar
-    inserirbtn = tk.Button(janelaUsuario, text='Voltar', command=lambda: menu.menu(janelaUsuario))
-    inserirbtn.place(relx=0.05, rely=0.05, anchor=tk.CENTER)
+    voltarbtn = tk.Button(janelaUsuario, text='Voltar', command=lambda: menu.menu(janelaUsuario))
+    voltarbtn.place(relx=0.05, rely=0.05, anchor=tk.CENTER)
 
     # Atualização TreeView
     classcrud.attTreeUsuario(treeUsuario)
