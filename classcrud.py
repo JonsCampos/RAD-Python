@@ -1,6 +1,7 @@
 import sqlite3 as conector
 import tkinter as tk
 from tkinter import messagebox as mb
+import hashlib
 import menuAdmin
 import menu
 
@@ -715,10 +716,13 @@ def insertUsuario(nomeUsuario, senhaUsuario, IDFuncionario, treeUsuario, janelaU
                 mb.showerror('Erro', 'Funcionário já tem um usuário', parent=janelaUsuario)
                 return
 
+        # Hash na senha
+        senhaHash = hashlib.sha256(senhaUsuario.get().encode()).hexdigest()
+
         # Instância da classe Usuário
         usuario = Usuario()
         usuario.nomeUsuario = nomeUsuario.get()
-        usuario.senhaUsuario = senhaUsuario.get()
+        usuario.senhaUsuario = senhaHash
         usuario.IDFuncionario = IDFuncionario.get()
         # Insert - Usuario
         comando = '''INSERT INTO usuario (nome_usuario, senha, funcionario_ID) 
@@ -767,11 +771,15 @@ def updateUsuario(IDUsuario, nomeUsuario, senhaUsuario, treeUsuario, janelaUsuar
         if senhaUsuario.get() == '':
             mb.showerror('Erro', 'Senha inválida', parent=janelaUsuario)
             return
+
+        # Hash na senha
+        senhaHash = hashlib.sha256(senhaUsuario.get().encode()).hexdigest()
+
         # Instância da classe Usuário
         usuario = Usuario()
         usuario.IDUsuario = IDUsuario.get()
         usuario.nomeUsuario = nomeUsuario.get()
-        usuario.senhaUsuario = senhaUsuario.get()
+        usuario.senhaUsuario = senhaHash
         # Update - Usuário
         comando = '''UPDATE Usuario
                         SET nome_usuario = (?), senha = (?)
@@ -996,8 +1004,13 @@ def nivel(lgnUsuario):  # Nível
 def entrar(lgnUsuario, lgnSenha):   # Login
     try:
         conexao, cursor = abrirConexao()
+
+        # Hash na senha
+        senhaHash = hashlib.sha256(lgnSenha.get().encode()).hexdigest()
+
         # Instância da classe Login
-        login = Login(lgnUsuario.get(), lgnSenha.get())
+        login = Login(lgnUsuario.get(), senhaHash)
+
         # Verificação Login
         selectLgnUsuario = verificarLgnUsuario(login.lgnUsuario, cursor)
         if selectLgnUsuario == 0:
@@ -1011,7 +1024,7 @@ def entrar(lgnUsuario, lgnSenha):   # Login
                 mb.showerror('Erro', 'Usuário e/ou senha inválidos')
                 lgnUsuario.delete(0, tk.END)
                 lgnSenha.delete(0, tk.END)
-                return
+                return     
         # Níveis
         nvl = nivel(lgnUsuario)
         lgnUsuario.delete(0, tk.END)
@@ -1058,7 +1071,7 @@ def tabelas():  # Criação das tabelas (caso não exista)
         comando = '''CREATE TABLE IF NOT EXISTS "Usuario" (
 	                    "usuario_ID" INTEGER NOT NULL,
 	                    "nome_usuario" VARCHAR(50) NOT NULL UNIQUE,
-	                    "senha" VARCHAR(50) NOT NULL,
+	                    "senha" TEXT NOT NULL,
 	                    "funcionario_ID" INTEGER NOT NULL,
 	                    PRIMARY KEY("usuario_ID" AUTOINCREMENT)
 	                    FOREIGN KEY("funcionario_ID") REFERENCES "Funcionario"("funcionario_ID") ON DELETE CASCADE
@@ -1110,9 +1123,11 @@ def tabelas():  # Criação das tabelas (caso não exista)
                             VALUES ('Administrador', 1);'''
             cursor.execute(comando, )
 
+            senhaAdmin = 'admin'
+            senhaHash = hashlib.sha256(senhaAdmin.encode()).hexdigest()
             comando = '''INSERT INTO Usuario (nome_usuario, senha, funcionario_ID) 
-                            VALUES ('admin', 'admin', 1);'''
-            cursor.execute(comando, )
+                            VALUES ('admin', ?, 1);'''
+            cursor.execute(comando, (senhaHash, ))
             
             conexao.commit()
 
