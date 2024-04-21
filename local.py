@@ -2,7 +2,11 @@ import tkinter as tk
 from tkinter import ttk
 import classcrud
 
-def local(nvl):
+def voltar(janelaLocal, janelaMenu):
+    janelaMenu.deiconify()
+    janelaLocal.destroy()
+
+def local(nvl, janelaMenu):
     # Janela
     janelaLocal = tk.Toplevel()
     x, y = 800, 500
@@ -11,6 +15,8 @@ def local(nvl):
     janelaLocal.resizable(False, False)
     janelaLocal.iconbitmap('icon.ico')
     janelaLocal.title('Sistema de Controle de acesso')
+    janelaMenu.withdraw()
+    janelaLocal.protocol("WM_DELETE_WINDOW", lambda: voltar(janelaLocal, janelaMenu))
 
     # Título
     ttk.Label(janelaLocal, text='Locais', font=(12)).place(relx=0.5, rely=0.05, anchor=tk.CENTER)
@@ -72,7 +78,7 @@ def local(nvl):
     removerbtn.place(relx=0.75, rely=0.33, anchor=tk.CENTER)
 
     # Button - Voltar
-    inserirbtn = tk.Button(janelaLocal, text='Voltar', command=janelaLocal.destroy)
+    inserirbtn = tk.Button(janelaLocal, text='Voltar', command=lambda: voltar(janelaLocal, janelaMenu))
     inserirbtn.place(relx=0.05, rely=0.05, anchor=tk.CENTER)
 
     # Atualização TreeView

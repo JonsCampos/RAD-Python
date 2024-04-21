@@ -2,7 +2,11 @@ import tkinter as tk
 from tkinter import ttk
 import classcrud
 
-def acesso(nvl):
+def voltar(janelaAcesso, janelaMenu):
+    janelaMenu.deiconify()
+    janelaAcesso.destroy()
+
+def acesso(nvl, janelaMenu):
     # Janela
     janelaAcesso = tk.Toplevel()
     x, y = 800, 500
@@ -11,6 +15,8 @@ def acesso(nvl):
     janelaAcesso.resizable(False, False)
     janelaAcesso.iconbitmap('icon.ico')
     janelaAcesso.title('Sistema de Controle de acesso')
+    janelaMenu.withdraw()
+    janelaAcesso.protocol("WM_DELETE_WINDOW", lambda: voltar(janelaAcesso, janelaMenu))
 
     # Título
     ttk.Label(janelaAcesso, text='Controle de Acesso', font=(12)).place(relx=0.5, rely=0.05, anchor=tk.CENTER)
@@ -73,7 +79,7 @@ def acesso(nvl):
     inserirbtn.place(relx=0.25, rely=0.33, anchor=tk.CENTER)
 
     # Button - Voltar
-    voltarbtn = tk.Button(janelaAcesso, text='Voltar', command=janelaAcesso.destroy)
+    voltarbtn = tk.Button(janelaAcesso, text='Voltar', command=lambda: voltar(janelaAcesso, janelaMenu))
     voltarbtn.place(relx=0.05, rely=0.05, anchor=tk.CENTER)
 
     # Atualização TreeView

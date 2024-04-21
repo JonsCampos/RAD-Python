@@ -502,8 +502,8 @@ def insertFuncionario(nomeFuncionario, emailFuncionario, setorFuncionario, treeF
     try:
         conexao, cursor = abrirConexao()
         # Verificação de dados do funcionario vazio
-        if nomeFuncionario.get() == '' or emailFuncionario.get() == '':
-            mb.showerror('Erro', 'Email e/ou Nome vazio(s)!', parent=janelaFuncionario)
+        if nomeFuncionario.get() == '':
+            mb.showerror('Erro', 'Nome vazio', parent=janelaFuncionario)
             return
         
         if setorFuncionario['values'][0] == 'Sem registros':
@@ -549,8 +549,8 @@ def updateFuncionario(IDFuncionario, nomeFuncionario, emailFuncionario, setorFun
             mb.showerror('Erro', 'ID inválido', parent=janelaFuncionario)
             return
         # Verificação nome e E-mail do funcionario vazio
-        if nomeFuncionario.get() == '' or emailFuncionario.get()==  '':
-            mb.showerror('Erro', 'Nome e/ou E-Mail inválido(s)', parent=janelaFuncionario)
+        if nomeFuncionario.get() == '':
+            mb.showerror('Erro', 'Nome vazio', parent=janelaFuncionario)
             return
         
         if setorFuncionario['values'][0] == 'Sem registros':
@@ -1001,7 +1001,7 @@ def nivel(lgnUsuario):  # Nível
         if (conexao):
             conexao, cursor = fecharConexao(conexao, cursor) 
 
-def entrar(lgnUsuario, lgnSenha):   # Login
+def entrar(lgnUsuario, lgnSenha, janelaMain):   # Login
     try:
         conexao, cursor = abrirConexao()
 
@@ -1030,9 +1030,9 @@ def entrar(lgnUsuario, lgnSenha):   # Login
         lgnUsuario.delete(0, tk.END)
         lgnSenha.delete(0, tk.END)
         if nvl[1] == 'Administrador':
-            menuAdmin.menuAdmin(nvl)
+            menuAdmin.menuAdmin(nvl, janelaMain)
         else:
-            menu.menu(nvl)
+            menu.menu(nvl, janelaMain)
     except conector.Error as erro:
             mb.showerror('Erro', f'Erro ao se conectar com o banco de dados: {erro}')
     finally:

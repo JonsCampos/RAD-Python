@@ -2,7 +2,11 @@ import tkinter as tk
 from tkinter import ttk
 import classcrud
 
-def setor(nvl):
+def voltar(janelaSetor, janelaMenu):
+    janelaMenu.deiconify()
+    janelaSetor.destroy()
+
+def setor(nvl, janelaMenu):
     # Janela
     janelaSetor = tk.Toplevel()
     x, y = 800, 500
@@ -11,6 +15,8 @@ def setor(nvl):
     janelaSetor.resizable(False, False)
     janelaSetor.iconbitmap('icon.ico')
     janelaSetor.title('Sistema de Controle de acesso')
+    janelaMenu.withdraw()
+    janelaSetor.protocol("WM_DELETE_WINDOW", lambda: voltar(janelaSetor, janelaMenu))
 
     # Título
     ttk.Label(janelaSetor, text='Setores', font=(12)).place(relx=0.5, rely=0.05, anchor=tk.CENTER)
@@ -82,7 +88,7 @@ def setor(nvl):
     removerbtn.place(relx=0.75, rely=0.33, anchor=tk.CENTER)
 
     # Button - Voltar
-    inserirbtn = tk.Button(janelaSetor, text='Voltar', command=janelaSetor.destroy)
+    inserirbtn = tk.Button(janelaSetor, text='Voltar', command=lambda: voltar(janelaSetor, janelaMenu))
     inserirbtn.place(relx=0.05, rely=0.05, anchor=tk.CENTER)
 
     # Atualização TreeView

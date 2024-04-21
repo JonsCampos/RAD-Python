@@ -35,7 +35,7 @@ lgnSenha = tk.Entry(janelaMain, show='*')
 lgnSenha.place(relx=0.52, rely=0.61, anchor=tk.CENTER)
 
 # Button - Entrar
-entrarbtn = tk.Button(janelaMain, text='Entrar', command=lambda: classcrud.entrar(lgnUsuario, lgnSenha))
+entrarbtn = tk.Button(janelaMain, text='Entrar', command=lambda: classcrud.entrar(lgnUsuario, lgnSenha, janelaMain))
 entrarbtn.place(relx=0.5, rely=0.73, anchor=tk.CENTER)
 
 janelaMain.mainloop()
