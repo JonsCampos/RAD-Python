@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS "Funcionario" (
 CREATE TABLE IF NOT EXISTS "Usuario" (
 	"usuario_ID" INTEGER NOT NULL,
 	"nome_usuario" VARCHAR(50) NOT NULL UNIQUE,
-	"senha" VARCHAR(50) NOT NULL,
+	"senha" TEXT NOT NULL,
 	"funcionario_ID" INTEGER NOT NULL,
 	PRIMARY KEY("usuario_ID" AUTOINCREMENT)
 	FOREIGN KEY("funcionario_ID") REFERENCES "Funcionario"("funcionario_ID") ON DELETE CASCADE
