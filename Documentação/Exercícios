@@ -13,7 +13,8 @@ QUESTÃO 2 - a) open("nome_arquivo",w)
 
 AULA 04
 QUESTÃO 1 - d) A forma é usando % (percentual), ou { } (chaves)
-QUESTÃO 2 - d) Para abrir um arquivo texto, por exemplo, sempre é necessário verificar se ele não está corrompido antes, pois, caso contrário, pode gerar inconsistência no programa.
+QUESTÃO 2 - b) Apesar de não ser obrigatório o tratamento de exceções, ele deve ser usado sempre para evitar
+            problemas ao longo da execução do programa. 
 
 AULA 05
 QUESTÃO 1 - d) O cursor que é instanciado na linha 4 é fundamental para que o programa possa funcionar corretamente.
