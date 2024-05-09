@@ -89,6 +89,9 @@ def local(nvl, janelaMenu):
     inserirbtn = ck.CTkButton(janelaLocal, width=50, text='Voltar', command=lambda: voltar(janelaLocal, janelaMenu))
     inserirbtn.place(relx=0.05, rely=0.05, anchor=tk.CENTER)
 
+    # Esc para voltar
+    janelaLocal.bind('<Escape>', lambda event: voltar(janelaLocal, janelaMenu))
+
     # Atualização TreeView
     classcrud.attTreeLocal(treeLocal, janelaLocal)
 

@@ -106,6 +106,9 @@ def usuario(nvl, janelaMenu):
     inserirbtn = ck.CTkButton(janelaUsuario, width=50, text='Voltar', command=lambda: voltar(janelaUsuario, janelaMenu))
     inserirbtn.place(relx=0.05, rely=0.05, anchor=tk.CENTER)
 
+    # Esc para voltar
+    janelaUsuario.bind('<Escape>', lambda event: voltar(janelaUsuario, janelaMenu))
+
     # Atualização TreeView
     classcrud.attTreeUsuario(treeUsuario, janelaUsuario)
 

@@ -3,11 +3,11 @@ from tkinter import ttk
 import customtkinter as ck
 import classcrud
 
-def voltar(janelaAcesso, janelaMenu):
-    janelaMenu.deiconify()
+def voltar(janelaAcesso, janela):
+    janela.deiconify()
     janelaAcesso.destroy()
 
-def acesso(nvl, janelaMenu):
+def acesso(nvl, janela):
     # Janela
     janelaAcesso = ck.CTkToplevel()
     x, y = 800, 500
@@ -16,8 +16,8 @@ def acesso(nvl, janelaMenu):
     janelaAcesso.resizable(False, False)
     janelaAcesso.after(200, lambda: janelaAcesso.iconbitmap('icon.ico'))
     janelaAcesso.title('Sistema de Controle de acesso')
-    janelaMenu.withdraw()
-    janelaAcesso.protocol('WM_DELETE_WINDOW', lambda: voltar(janelaAcesso, janelaMenu))
+    janela.withdraw()
+    janelaAcesso.protocol('WM_DELETE_WINDOW', lambda: voltar(janelaAcesso, janela))
 
     # Título
     ck.CTkLabel(janelaAcesso, text='Controle de Acesso', font=ck.CTkFont(size=15)).place(relx=0.5, rely=0.05, anchor=tk.CENTER)
@@ -84,9 +84,16 @@ def acesso(nvl, janelaMenu):
     inserirbtn = ck.CTkButton(janelaAcesso, text='Inserir', command=lambda: classcrud.insertAcesso(IDFunc, local, tipo, treeAcessos, janelaAcesso))
     inserirbtn.place(relx=0.25, rely=0.33, anchor=tk.CENTER)
 
-    # Button - Voltar
-    voltarbtn = ck.CTkButton(janelaAcesso, width=50, text='Voltar', command=lambda: voltar(janelaAcesso, janelaMenu))
-    voltarbtn.place(relx=0.05, rely=0.05, anchor=tk.CENTER)
+    if nvl[1] == 'Administrador':
+        # Button - Voltar ADM
+        voltarbtn = ck.CTkButton(janelaAcesso, width=50, text='Voltar', command=lambda: voltar(janelaAcesso, janela))
+        voltarbtn.place(relx=0.05, rely=0.05, anchor=tk.CENTER)
+        # Esc para voltar
+        janelaAcesso.bind('<Escape>', lambda event: voltar(janelaAcesso, janela))
+    else:
+        # Button - Sair
+        voltarbtn = ck.CTkButton(janelaAcesso, width=50, text='Sair', command=lambda: voltar(janelaAcesso, janela))
+        voltarbtn.place(relx=0.05, rely=0.05, anchor=tk.CENTER)
 
     # Atualização TreeView
     classcrud.attTreeAcesso(treeAcessos, janelaAcesso)

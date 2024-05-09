@@ -113,6 +113,9 @@ def funcionario(nvl, janelaMenu):
     inserirbtn = ck.CTkButton(janelaFuncionario, width=50, text='Voltar', command=lambda: voltar(janelaFuncionario, janelaMenu))
     inserirbtn.place(relx=0.05, rely=0.05, anchor=tk.CENTER)
 
+    # Esc para voltar
+    janelaFuncionario.bind('<Escape>', lambda event: voltar(janelaFuncionario, janelaMenu))
+
     # Atualização TreeView
     classcrud.attTreeFuncionario(treeFuncionario, janelaFuncionario)
 

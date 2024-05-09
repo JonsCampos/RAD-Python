@@ -31,24 +31,24 @@ def menuAdmin(nvl, janelaMain):
     ck.CTkLabel(janelaMenuAdmin, text=nvl[0], font=ck.CTkFont(size=15)).place(relx=0.92, rely=0.05, anchor=tk.CENTER)
 
     # Button - Acesso
-    acessobtn = ck.CTkButton(janelaMenuAdmin, text='Acesso', command=lambda: acesso.acesso(nvl, janelaMenuAdmin))
-    acessobtn.place(relx=0.5, rely=0.1666, anchor=tk.CENTER)
+    acessobtn = ck.CTkButton(janelaMenuAdmin, text='Acesso', width=180, height=30, command=lambda: acesso.acesso(nvl, janelaMenuAdmin))
+    acessobtn.place(relx=0.5, rely=0.33, anchor=tk.CENTER)
 
     # Button - Setor
     setorbtn = ck.CTkButton(janelaMenuAdmin, text='Setor', command=lambda: setor.setor(nvl, janelaMenuAdmin))
-    setorbtn.place(relx=0.5, rely=0.3332, anchor=tk.CENTER)
+    setorbtn.place(relx=0.25, rely=0.5478, anchor=tk.CENTER)
 
     # Button - Funcionario
     funcionariobtn = ck.CTkButton(janelaMenuAdmin, text='Funcionário', command=lambda: funcionario.funcionario(nvl, janelaMenuAdmin))
-    funcionariobtn.place(relx=0.5, rely=0.4998, anchor=tk.CENTER)
+    funcionariobtn.place(relx=0.75, rely=0.5478, anchor=tk.CENTER)
 
     # Button - Usuario
     usuariobtn = ck.CTkButton(janelaMenuAdmin, text='Usuário', command=lambda: usuario.usuario(nvl, janelaMenuAdmin))
-    usuariobtn.place(relx=0.5, rely=0.6664, anchor=tk.CENTER)
+    usuariobtn.place(relx=0.25, rely=0.7656, anchor=tk.CENTER)
 
     # Button - Local
     localbtn = ck.CTkButton(janelaMenuAdmin, text='Local', command=lambda: local.local(nvl, janelaMenuAdmin))
-    localbtn.place(relx=0.5, rely=0.833, anchor=tk.CENTER)
+    localbtn.place(relx=0.75, rely=0.7656, anchor=tk.CENTER)
 
     # Button - Sair
     sairbtn = ck.CTkButton(janelaMenuAdmin, width=50, text='Sair', command=lambda: voltar(janelaMenuAdmin, janelaMain))

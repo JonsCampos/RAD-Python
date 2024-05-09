@@ -3,7 +3,7 @@ import tkinter as tk
 from CTkMessagebox import CTkMessagebox
 import hashlib
 import menuAdmin
-import menu
+import acesso
 
 #--------------------------------------------------------------------------
 # Classes
@@ -1009,7 +1009,6 @@ def verificarLgnSenha(lgnUsuario, cursor):    # Verifica Login Senha
 def nivel(lgnUsuario):  # Nível
     try:
         conexao, cursor = abrirConexao()
-
         comando = '''SELECT u.nome_usuario, s.nome_setor
                         FROM Usuario u
                         JOIN Funcionario f ON u.funcionario_ID = f.funcionario_ID
@@ -1055,7 +1054,7 @@ def entrar(lgnUsuario, lgnSenha, janelaMain):   # Login
         if nvl[1] == 'Administrador':
             menuAdmin.menuAdmin(nvl, janelaMain)
         else:
-            menu.menu(nvl, janelaMain)
+            acesso.acesso(nvl, janelaMain)
     except conector.Error as erro:
         CTkMessagebox(title='Erro', icon='cancel', message=f'Erro ao se conectar com o banco de dados: {erro}')
     finally:

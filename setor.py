@@ -99,6 +99,9 @@ def setor(nvl, janelaMenu):
     inserirbtn = ck.CTkButton(janelaSetor, width=50, text='Voltar', command=lambda: voltar(janelaSetor, janelaMenu))
     inserirbtn.place(relx=0.05, rely=0.05, anchor=tk.CENTER)
 
+    # Esc para voltar
+    janelaSetor.bind('<Escape>', lambda event: voltar(janelaSetor, janelaMenu))
+
     # Atualização TreeView
     classcrud.attTreeSetor(treeSetor, janelaSetor)
 
