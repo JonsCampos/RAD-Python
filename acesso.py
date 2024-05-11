@@ -82,7 +82,7 @@ def acesso(nvl, janela):
     inserirbtn = ck.CTkButton(janelaAcesso, text='Inserir', command=lambda: classcrud.insertAcesso(IDFunc, local, registros, tipo, treeAcessos, janelaAcesso))
     inserirbtn.place(relx=0.25, rely=0.33, anchor=tk.CENTER)
 
-    if nvl[1] == 'Administrador':
+    if nvl[1] == 'Administrador' or nvl[2] == 'Sim':
         # Button - Voltar ADM
         voltarbtn = ck.CTkButton(janelaAcesso, width=50, text='Voltar', command=lambda: voltar(janelaAcesso, janela))
         voltarbtn.place(relx=0.05, rely=0.05, anchor=tk.CENTER)
