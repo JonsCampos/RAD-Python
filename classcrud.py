@@ -251,7 +251,7 @@ def pegarIDLocal(local, cursor):    # Pega o ID do local selecionado
     selectLocal_ID = cursor.fetchone()[0]
     return selectLocal_ID
 
-def insertAcesso(IDFunc, local, tipo, treeAcessos, janelaAcesso):   # Insert tabela Acesso
+def insertAcesso(IDFunc, local, registros, tipo, treeAcessos, janelaAcesso):   # Insert tabela Acesso
     try:
         conexao, cursor = abrirConexao()
         # Verificação Funcionário
@@ -264,7 +264,7 @@ def insertAcesso(IDFunc, local, tipo, treeAcessos, janelaAcesso):   # Insert tab
             CTkMessagebox(title='Erro', icon='cancel', message='Funcionário não encontrado')
             return
         # ID do local
-        if local.get() == 'Sem registros' or local.get() == 'Selecione...':
+        if local.get() == 'Sem registros':
             CTkMessagebox(title='Erro', icon='cancel', message='Local não encontrado')
             return
         else:
@@ -286,6 +286,8 @@ def insertAcesso(IDFunc, local, tipo, treeAcessos, janelaAcesso):   # Insert tab
         CTkMessagebox(title='Erro', icon='cancel', message=f'Erro ao inserir os dados: {erro}')
     finally:
         IDFunc.delete(0, tk.END)
+        local.set(registros[0][0])
+        tipo.set('Entrada')
         if (conexao):
             conexao, cursor = fecharConexao(conexao, cursor)
         # Atualização TreeView
@@ -505,7 +507,7 @@ def pegarIDSetor(setor, cursor):    # Pega o ID do setor selecionado
     selectSetor_ID = cursor.fetchone()[0]
     return selectSetor_ID       
 
-def insertFuncionario(nomeFuncionario, emailFuncionario, setorFuncionario, treeFuncionario, janelaFuncionario):   # Insert tabela Funcionario
+def insertFuncionario(nomeFuncionario, emailFuncionario, setorFuncionario, registros, treeFuncionario, janelaFuncionario):   # Insert tabela Funcionario
     try:
         conexao, cursor = abrirConexao()
         # Verificação de dados do funcionario vazio
@@ -513,7 +515,7 @@ def insertFuncionario(nomeFuncionario, emailFuncionario, setorFuncionario, treeF
             CTkMessagebox(title='Erro', icon='cancel', message='Nome vazio')
             return
         
-        if setorFuncionario.get() == 'Sem registros' or setorFuncionario.get() == 'Selecione...':
+        if setorFuncionario.get() == 'Sem registros':
             CTkMessagebox(title='Erro', icon='cancel', message='Setor não encontrado')
             return
         else:
@@ -539,12 +541,13 @@ def insertFuncionario(nomeFuncionario, emailFuncionario, setorFuncionario, treeF
     finally:
         nomeFuncionario.delete(0, tk.END)
         emailFuncionario.delete(0, tk.END)
+        setorFuncionario.set(registros[0][0])
         if (conexao):
             conexao, cursor = fecharConexao(conexao, cursor)
         # Atualização TreeView
         attTreeFuncionario(treeFuncionario, janelaFuncionario)
 
-def updateFuncionario(IDFuncionario, nomeFuncionario, emailFuncionario, setorFuncionario, treeFuncionario, janelaFuncionario):  # Update tabela Funcionario
+def updateFuncionario(IDFuncionario, nomeFuncionario, emailFuncionario, setorFuncionario, registros, treeFuncionario, janelaFuncionario):  # Update tabela Funcionario
     try:
         conexao, cursor = abrirConexao()
         # Verificação ID
@@ -561,7 +564,7 @@ def updateFuncionario(IDFuncionario, nomeFuncionario, emailFuncionario, setorFun
             CTkMessagebox(title='Erro', icon='cancel', message='Nome vazio')
             return
         
-        if setorFuncionario.get() == 'Sem registros' or setorFuncionario.get() == 'Selecione...':
+        if setorFuncionario.get() == 'Sem registros':
             CTkMessagebox(title='Erro', icon='cancel', message='Setor não encontrado')
             return
         else:
@@ -595,6 +598,7 @@ def updateFuncionario(IDFuncionario, nomeFuncionario, emailFuncionario, setorFun
         IDFuncionario.delete(0, tk.END)
         nomeFuncionario.delete(0, tk.END)
         emailFuncionario.delete(0, tk.END)
+        setorFuncionario.set(registros[0][0])
         if (conexao):
             conexao, cursor = fecharConexao(conexao, cursor)
         # Atualização TreeView

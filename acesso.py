@@ -31,14 +31,12 @@ def acesso(nvl, janela):
     IDFunc = ck.CTkEntry(janelaAcesso)
     IDFunc.place(relx=0.25, rely=0.21, anchor=tk.CENTER)
 
-    # Combobox - Local
+    # ComboBox - Local
     labelLocal = ck.CTkLabel(janelaAcesso, text='Local')
     labelLocal.place(relx=0.5, rely=0.16, anchor=tk.CENTER)
     registros = classcrud.fillComboboxLocal(janelaAcesso)
-    local = ck.CTkComboBox(janelaAcesso, 
-    values=['Sem registros'] if registros == [] else [registro[0] for registro in registros],
-    state='readonly')
-    local.set('Selecione...')
+    comboboxPadrao = ck.StringVar(value=registros[0][0]) 
+    local = ck.CTkComboBox(janelaAcesso, state='readonly', variable=comboboxPadrao, values=['Sem registros'] if registros == [] else [registro[0] for registro in registros])
     local.place(relx=0.5, rely=0.21, anchor=tk.CENTER)
 
     # Radiobutton - Tipo
@@ -81,7 +79,7 @@ def acesso(nvl, janela):
     treeAcessos.place(relx=0.5, rely=0.7, anchor=tk.CENTER)
 
     # Button - Inserir
-    inserirbtn = ck.CTkButton(janelaAcesso, text='Inserir', command=lambda: classcrud.insertAcesso(IDFunc, local, tipo, treeAcessos, janelaAcesso))
+    inserirbtn = ck.CTkButton(janelaAcesso, text='Inserir', command=lambda: classcrud.insertAcesso(IDFunc, local, registros, tipo, treeAcessos, janelaAcesso))
     inserirbtn.place(relx=0.25, rely=0.33, anchor=tk.CENTER)
 
     if nvl[1] == 'Administrador':

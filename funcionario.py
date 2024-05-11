@@ -47,10 +47,8 @@ def funcionario(nvl, janelaMenu):
     labelSFuncionario = ck.CTkLabel(janelaFuncionario, text='Setor')
     labelSFuncionario.place(relx=0.8, rely=0.16, anchor=tk.CENTER)
     registros = classcrud.fillComboboxSetor(janelaFuncionario)
-    setorFuncionario = ck.CTkComboBox(janelaFuncionario, 
-    values=['Sem registros'] if registros == [] else [registro[0] for registro in registros],
-    state='readonly')
-    setorFuncionario.set('Selecione...')
+    comboboxPadrao = ck.StringVar(value=registros[0][0]) 
+    setorFuncionario = ck.CTkComboBox(janelaFuncionario, state='readonly', variable=comboboxPadrao, values=['Sem registros'] if registros == [] else [registro[0] for registro in registros])
     setorFuncionario.place(relx=0.8, rely=0.21, anchor=tk.CENTER)
     
     # Estilo TreeView
@@ -85,7 +83,7 @@ def funcionario(nvl, janelaMenu):
         IDFuncionario.delete(0, tk.END)
         nomeFuncionario.delete(0, tk.END)
         emailFuncionario.delete(0, tk.END)
-        setorFuncionario.set('Selecione...')
+        setorFuncionario.set(registros[0][0])
 
         for selecao in treeFuncionario.selection():  
             item = treeFuncionario.item(selecao)  
@@ -98,11 +96,11 @@ def funcionario(nvl, janelaMenu):
     treeFuncionario.bind("<<TreeviewSelect>>", selecionarRegistros)
 
     # Button - Inserir
-    inserirbtn = ck.CTkButton(janelaFuncionario, text='Inserir', command=lambda: classcrud.insertFuncionario(nomeFuncionario, emailFuncionario, setorFuncionario, treeFuncionario, janelaFuncionario))
+    inserirbtn = ck.CTkButton(janelaFuncionario, text='Inserir', command=lambda: classcrud.insertFuncionario(nomeFuncionario, emailFuncionario, setorFuncionario, registros, treeFuncionario, janelaFuncionario))
     inserirbtn.place(relx=0.25, rely=0.33, anchor=tk.CENTER)
 
     # Button - Atualizar
-    atualizarbtn = ck.CTkButton(janelaFuncionario, text='Atualizar', command=lambda: classcrud.updateFuncionario(IDFuncionario, nomeFuncionario, emailFuncionario, setorFuncionario, treeFuncionario, janelaFuncionario))
+    atualizarbtn = ck.CTkButton(janelaFuncionario, text='Atualizar', command=lambda: classcrud.updateFuncionario(IDFuncionario, nomeFuncionario, emailFuncionario, setorFuncionario, registros, treeFuncionario, janelaFuncionario))
     atualizarbtn.place(relx=0.50, rely=0.33, anchor=tk.CENTER)
 
     # Button - Remover

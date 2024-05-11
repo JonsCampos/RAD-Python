@@ -12,6 +12,7 @@ janelaMain.geometry(f'{x}x{y}+{posx}+{posy}')
 janelaMain.resizable(False, False)
 janelaMain.iconbitmap('icon.ico')
 janelaMain.title('Sistema de Controle de acesso')
+ck.set_appearance_mode('dark')
 
 # Criação das tabelas (caso não exista)
 classcrud.tabelas()
