@@ -101,6 +101,7 @@ class Usuario:
         self.__nomeUsuario = ''
         self.__senhaUsuario = ''
         self.__IDFuncionario = 0
+        self.__usuAdmin = ''
 
     @property
     def IDUsuario(self):
@@ -133,6 +134,14 @@ class Usuario:
     @IDFuncionario.setter    
     def IDFuncionario(self, IDFuncionario):
         self.__IDFuncionario = IDFuncionario
+
+    @property
+    def usuAdmin(self):
+        return self.__usuAdmin
+
+    @usuAdmin.setter    
+    def usuAdmin(self, usuAdmin):
+        self.__usuAdmin = usuAdmin
 
 class Local:    
     def __init__(self):
@@ -648,7 +657,7 @@ def attTreeUsuario(treeUsuario, janelaUsuario):       # Atualização TreeView
     try:
         # Select - Locais
         conexao, cursor = abrirConexao()
-        comando = '''SELECT u.usuario_ID, u.nome_usuario, f.nome
+        comando = '''SELECT u.usuario_ID, u.nome_usuario, f.nome, u.admin
                         FROM Usuario u
                         JOIN Funcionario f ON u.funcionario_ID = f.funcionario_ID
                         WHERE u.Usuario_ID != 1;'''
@@ -659,7 +668,8 @@ def attTreeUsuario(treeUsuario, janelaUsuario):       # Atualização TreeView
             treeID = registro[0]
             treeNomeUsuario = registro[1]
             treeFuncionario = registro[2]
-            treeUsuario.insert('', 'end', values=(treeID, treeNomeUsuario, treeFuncionario))           
+            treeAdmin = registro[3]
+            treeUsuario.insert('', 'end', values=(treeID, treeNomeUsuario, treeFuncionario, treeAdmin))           
     except conector.Error as erro:
         CTkMessagebox(title='Erro', icon='cancel', message=f'Erro ao exibir os usuários: {erro}')
     finally:
@@ -674,6 +684,18 @@ def registroIDFunc(nomeusu, janelaUsuario):
         return idfunc
     except conector.Error as erro:
         CTkMessagebox(title='Erro', icon='cancel', message=f'Erro ao inserir os dados: {erro}')
+    finally:
+        if (conexao):
+            conexao, cursor = fecharConexao(conexao, cursor)
+
+def switchAdmin(nomeusu, janelaUsuario):
+    try:
+        conexao, cursor = abrirConexao()
+        cursor.execute('SELECT admin FROM Usuario WHERE nome_usuario = ?;', (nomeusu, ))
+        switch = cursor.fetchone()[0]
+        return switch
+    except conector.Error as erro:
+        CTkMessagebox(title='Erro', icon='cancel', message=f'Erro ao exibir os dados: {erro}')
     finally:
         if (conexao):
             conexao, cursor = fecharConexao(conexao, cursor)
@@ -698,7 +720,7 @@ def verificarFuncionarioUsuario(IDFuncionario, cursor): # Verificar se funcioná
     selectFuncUsuario = cursor.fetchone()[0]
     return selectFuncUsuario
 
-def insertUsuario(nomeUsuario, senhaUsuario, IDFuncionario, treeUsuario, janelaUsuario): # Insert tabela Usuario
+def insertUsuario(nomeUsuario, senhaUsuario, IDFuncionario, switchAdmin, treeUsuario, janelaUsuario): # Insert tabela Usuario
     try:
         conexao, cursor = abrirConexao()
         # Verificação nome de usuário vazio
@@ -740,10 +762,11 @@ def insertUsuario(nomeUsuario, senhaUsuario, IDFuncionario, treeUsuario, janelaU
         usuario.nomeUsuario = nomeUsuario.get()
         usuario.senhaUsuario = senhaHash
         usuario.IDFuncionario = IDFuncionario.get()
+        usuario.usuAdmin = switchAdmin.get()
         # Insert - Usuario
-        comando = '''INSERT INTO usuario (nome_usuario, senha, funcionario_ID) 
-                        VALUES (?, ?, ?);'''
-        cursor.execute(comando, (usuario.nomeUsuario, usuario.senhaUsuario, usuario.IDFuncionario))
+        comando = '''INSERT INTO usuario (nome_usuario, senha, funcionario_ID, admin) 
+                        VALUES (?, ?, ?, ?);'''
+        cursor.execute(comando, (usuario.nomeUsuario, usuario.senhaUsuario, usuario.IDFuncionario, usuario.usuAdmin))
         # Messagebox - Confirmação
         msg = CTkMessagebox(title='Confirmação', message='Confirmar inserção?', icon='question', option_1='Não', option_3='Sim')
         resposta = msg.get()
@@ -757,12 +780,13 @@ def insertUsuario(nomeUsuario, senhaUsuario, IDFuncionario, treeUsuario, janelaU
         nomeUsuario.delete(0, tk.END)
         senhaUsuario.delete(0, tk.END)
         IDFuncionario.delete(0, tk.END)
+        switchAdmin.deselect()
         if (conexao):
             conexao, cursor = fecharConexao(conexao, cursor)
         # Atualização TreeView
         attTreeUsuario(treeUsuario, janelaUsuario)
 
-def updateUsuario(IDUsuario, nomeUsuario, senhaUsuario, treeUsuario, janelaUsuario):  # Update tabela Usuario
+def updateUsuario(IDUsuario, nomeUsuario, senhaUsuario, switchAdmin, treeUsuario, janelaUsuario):  # Update tabela Usuario
     try:
         conexao, cursor = abrirConexao()
         # Verificação ID
@@ -798,11 +822,12 @@ def updateUsuario(IDUsuario, nomeUsuario, senhaUsuario, treeUsuario, janelaUsuar
         usuario.IDUsuario = IDUsuario.get()
         usuario.nomeUsuario = nomeUsuario.get()
         usuario.senhaUsuario = senhaHash
+        usuario.usuAdmin = switchAdmin.get()
         # Update - Usuário
         comando = '''UPDATE Usuario
-                        SET nome_usuario = (?), senha = (?)
+                        SET nome_usuario = (?), senha = (?), admin = (?)
                         WHERE usuario_ID = (?);'''
-        cursor.execute(comando, (usuario.nomeUsuario, usuario.senhaUsuario, usuario.IDUsuario))
+        cursor.execute(comando, (usuario.nomeUsuario, usuario.senhaUsuario, usuario.usuAdmin, usuario.IDUsuario))
         # Messagebox - Confirmação
         msg = CTkMessagebox(title='Confirmação', message='Confirmar Atualização?', icon='question', option_1='Não', option_3='Sim')
         resposta = msg.get()
@@ -816,6 +841,7 @@ def updateUsuario(IDUsuario, nomeUsuario, senhaUsuario, treeUsuario, janelaUsuar
         IDUsuario.delete(0, tk.END)
         nomeUsuario.delete(0, tk.END)
         senhaUsuario.delete(0, tk.END)
+        switchAdmin.deselect()
         if (conexao):
             conexao, cursor = fecharConexao(conexao, cursor)
         # Atualização TreeView
@@ -1013,7 +1039,7 @@ def verificarLgnSenha(lgnUsuario, cursor):    # Verifica Login Senha
 def nivel(lgnUsuario):  # Nível
     try:
         conexao, cursor = abrirConexao()
-        comando = '''SELECT u.nome_usuario, s.nome_setor
+        comando = '''SELECT u.nome_usuario, s.nome_setor, u.admin
                         FROM Usuario u
                         JOIN Funcionario f ON u.funcionario_ID = f.funcionario_ID
                         JOIN Setor s ON f.setor_ID = s.setor_ID
@@ -1055,7 +1081,7 @@ def entrar(lgnUsuario, lgnSenha, janelaMain):   # Login
         nvl = nivel(lgnUsuario)
         lgnUsuario.delete(0, tk.END)
         lgnSenha.delete(0, tk.END)
-        if nvl[1] == 'Administrador':
+        if nvl[1] == 'Administrador' or nvl[2] == 'Sim':
             menuAdmin.menuAdmin(nvl, janelaMain)
         else:
             acesso.acesso(nvl, janelaMain)

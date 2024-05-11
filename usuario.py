@@ -27,27 +27,34 @@ def usuario(nvl, janelaMenu):
 
     # Entry - ID Usuário
     labelIDUsu = ck.CTkLabel(janelaUsuario, text='ID do usuário')
-    labelIDUsu.place(relx=0.2, rely=0.16, anchor=tk.CENTER)
+    labelIDUsu.place(relx=0.15, rely=0.16, anchor=tk.CENTER)
     IDUsuario = ck.CTkEntry(janelaUsuario)
-    IDUsuario.place(relx=0.2, rely=0.21, anchor=tk.CENTER)
+    IDUsuario.place(relx=0.15, rely=0.21, anchor=tk.CENTER)
 
     # Entry - Nome usuário
     labelNUsuario = ck.CTkLabel(janelaUsuario, text='Nome de usuário')
-    labelNUsuario.place(relx=0.4, rely=0.16, anchor=tk.CENTER)
+    labelNUsuario.place(relx=0.35, rely=0.16, anchor=tk.CENTER)
     nomeUsuario = ck.CTkEntry(janelaUsuario)
-    nomeUsuario.place(relx=0.4, rely=0.21, anchor=tk.CENTER)
+    nomeUsuario.place(relx=0.35, rely=0.21, anchor=tk.CENTER)
 
     # Entry - Senha
     labelSenha = ck.CTkLabel(janelaUsuario, text='Senha')
-    labelSenha.place(relx=0.6, rely=0.16, anchor=tk.CENTER)
+    labelSenha.place(relx=0.55, rely=0.16, anchor=tk.CENTER)
     senhaUsuario = ck.CTkEntry(janelaUsuario, show='*')
-    senhaUsuario.place(relx=0.6, rely=0.21, anchor=tk.CENTER)
+    senhaUsuario.place(relx=0.55, rely=0.21, anchor=tk.CENTER)
 
     # Entry - ID Funcionário
     labelSenha = ck.CTkLabel(janelaUsuario, text='ID do funcionário')
-    labelSenha.place(relx=0.8, rely=0.16, anchor=tk.CENTER)
+    labelSenha.place(relx=0.75, rely=0.16, anchor=tk.CENTER)
     IDFuncionario = ck.CTkEntry(janelaUsuario)
-    IDFuncionario.place(relx=0.8, rely=0.21, anchor=tk.CENTER)
+    IDFuncionario.place(relx=0.75, rely=0.21, anchor=tk.CENTER)
+
+    # Switch - Usuário admin
+    labelSwitch = ck.CTkLabel(janelaUsuario, text='Admin')
+    labelSwitch.place(relx=0.91, rely=0.16, anchor=tk.CENTER)
+    switchPadrao = ck.StringVar(value='Não')
+    switchAdmin = ck.CTkSwitch(janelaUsuario, text='', variable=switchPadrao, onvalue='Sim', offvalue='Não')
+    switchAdmin.place(relx=0.95, rely=0.21, anchor=tk.CENTER)
 
     # Estilo TreeView
     style = ttk.Style()
@@ -57,45 +64,53 @@ def usuario(nvl, janelaMenu):
     style.map('estilo.Treeview.Heading', foreground=[('active','Black')])
     style.map('estilo.Treeview', background=[('selected','#1f6aa5')], foreground=[('selected','white')])
     # TreeView
-    colunas = ('ID', 'Nome de usuário', 'Funcionário')            
+    colunas = ('ID', 'Nome de usuário', 'Funcionário', 'Admin')            
     treeUsuario = ttk.Treeview(janelaUsuario, columns=colunas, selectmode='browse', style='estilo.Treeview')
     treeUsuario['show'] = 'headings'
     # Scrollbar
     scroll = ck.CTkScrollbar(janelaUsuario, orientation='vertical', command=treeUsuario.yview, height=224)
     scroll.pack(side ='right', fill ='x')
     treeUsuario.configure(yscrollcommand=scroll.set)
-    scroll.place(relx=0.749, rely=0.7, anchor=tk.CENTER)
+    scroll.place(relx=0.83, rely=0.7, anchor=tk.CENTER)
     # Cabeçalho
     treeUsuario.heading('ID', text='ID')
     treeUsuario.heading('Nome de usuário', text='Nome de usuário')
     treeUsuario.heading('Funcionário', text='Funcionário')
+    treeUsuario.heading('Admin', text='Admin')
     # Colunas
     treeUsuario.column('ID',minwidth=0,width=100, anchor=tk.CENTER)
     treeUsuario.column('Nome de usuário',minwidth=0,width=140, anchor=tk.CENTER)
     treeUsuario.column('Funcionário',minwidth=0,width=140, anchor=tk.CENTER)
+    treeUsuario.column('Admin',minwidth=0,width=140, anchor=tk.CENTER)
     treeUsuario.place(relx=0.5, rely=0.7, anchor=tk.CENTER)
     # Selecionar
     def selecionarRegistros(event):
         IDUsuario.delete(0, tk.END)
         nomeUsuario.delete(0, tk.END)
         IDFuncionario.delete(0, tk.END)
+        switchAdmin.deselect()
 
         for selecao in treeUsuario.selection():  
             item = treeUsuario.item(selecao)  
-            idusu, nomeusu = item["values"][0:2]  
-            IDUsuario.insert(0, idusu)  
+            idusu, nomeusu = item["values"][0:2]
+            IDUsuario.insert(0, idusu)
             nomeUsuario.insert(0, nomeusu)
             idfunc = classcrud.registroIDFunc(nomeusu, janelaUsuario)
             IDFuncionario.insert(0, idfunc)
+            switch = classcrud.switchAdmin(nomeusu, janelaUsuario)
+            if switch == 'Não':
+                switchAdmin.deselect()
+            else:
+                switchAdmin.select()
 
     treeUsuario.bind("<<TreeviewSelect>>", selecionarRegistros)
 
     # Button - Inserir
-    inserirbtn = ck.CTkButton(janelaUsuario, text='Inserir', command=lambda: classcrud.insertUsuario(nomeUsuario, senhaUsuario, IDFuncionario , treeUsuario, janelaUsuario))
+    inserirbtn = ck.CTkButton(janelaUsuario, text='Inserir', command=lambda: classcrud.insertUsuario(nomeUsuario, senhaUsuario, IDFuncionario, switchAdmin, treeUsuario, janelaUsuario))
     inserirbtn.place(relx=0.25, rely=0.33, anchor=tk.CENTER)
 
     # Button - Atualizar
-    atualizarbtn = ck.CTkButton(janelaUsuario, text='Atualizar', command=lambda: classcrud.updateUsuario(IDUsuario, nomeUsuario, senhaUsuario, treeUsuario, janelaUsuario))
+    atualizarbtn = ck.CTkButton(janelaUsuario, text='Atualizar', command=lambda: classcrud.updateUsuario(IDUsuario, nomeUsuario, senhaUsuario, switchAdmin, treeUsuario, janelaUsuario))
     atualizarbtn.place(relx=0.50, rely=0.33, anchor=tk.CENTER)
 
     # Button - Remover
