@@ -1125,6 +1125,7 @@ def tabelas():  # Criação das tabelas (caso não exista)
 	                    "nome_usuario" VARCHAR(50) NOT NULL UNIQUE,
 	                    "senha" TEXT NOT NULL,
 	                    "funcionario_ID" INTEGER NOT NULL,
+                        "admin"	TEXT NOT NULL,
 	                    PRIMARY KEY("usuario_ID" AUTOINCREMENT)
 	                    FOREIGN KEY("funcionario_ID") REFERENCES "Funcionario"("funcionario_ID") ON DELETE CASCADE
                     );'''
