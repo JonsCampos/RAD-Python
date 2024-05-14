@@ -35,7 +35,7 @@ def acesso(nvl, janela):
     labelLocal = ck.CTkLabel(janelaAcesso, text='Local')
     labelLocal.place(relx=0.5, rely=0.16, anchor=tk.CENTER)
     registros = classcrud.fillComboboxLocal(janelaAcesso)
-    comboboxPadrao = ck.StringVar(value=registros[0][0]) 
+    comboboxPadrao = ck.StringVar(value='Sem registros' if registros == [] else registros[0][0]) 
     local = ck.CTkComboBox(janelaAcesso, state='readonly', variable=comboboxPadrao, values=['Sem registros'] if registros == [] else [registro[0] for registro in registros])
     local.place(relx=0.5, rely=0.21, anchor=tk.CENTER)
 
