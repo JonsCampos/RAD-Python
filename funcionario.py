@@ -47,7 +47,7 @@ def funcionario(nvl, janelaMenu):
     labelSFuncionario = ck.CTkLabel(janelaFuncionario, text='Setor')
     labelSFuncionario.place(relx=0.8, rely=0.16, anchor=tk.CENTER)
     registros = classcrud.fillComboboxSetor(janelaFuncionario)
-    comboboxPadrao = ck.StringVar(value=registros[0][0]) 
+    comboboxPadrao = ck.StringVar(value='Sem registros' if registros == [] else registros[0][0]) 
     setorFuncionario = ck.CTkComboBox(janelaFuncionario, state='readonly', variable=comboboxPadrao, values=['Sem registros'] if registros == [] else [registro[0] for registro in registros])
     setorFuncionario.place(relx=0.8, rely=0.21, anchor=tk.CENTER)
     
