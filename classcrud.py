@@ -1178,8 +1178,8 @@ def tabelas():  # Criação das tabelas (caso não exista)
 
             senhaAdmin = 'admin'
             senhaHash = hashlib.sha256(senhaAdmin.encode()).hexdigest()
-            comando = '''INSERT INTO Usuario (nome_usuario, senha, funcionario_ID) 
-                            VALUES ('admin', ?, 1);'''
+            comando = '''INSERT INTO Usuario (nome_usuario, senha, funcionario_ID, admin) 
+                        VALUES ('admin', ?, 1, 'Sim');'''
             cursor.execute(comando, (senhaHash, ))
             
             conexao.commit()
