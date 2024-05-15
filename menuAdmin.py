@@ -30,6 +30,11 @@ def menuAdmin(nvl, janelaMain):
     # Usuário
     ck.CTkLabel(janelaMenuAdmin, text=nvl[0], font=ck.CTkFont(size=15)).place(relx=0.92, rely=0.05, anchor=tk.CENTER)
 
+    # Usuário - Trocar senha
+    if nvl[0] != 'admin':
+        btnTrocarSenha = ck.CTkButton(janelaMenuAdmin, text='Trocar senha', font=ck.CTkFont(size=11, underline=True), fg_color='transparent', hover_color='#242424', width=45, height=8, command=lambda: usuario.trocarSenha(nvl, janelaMenuAdmin, janelaMain))
+        btnTrocarSenha.place(relx=0.92, rely=0.095, anchor=tk.CENTER)
+
     # Button - Acesso
     acessobtn = ck.CTkButton(janelaMenuAdmin, text='Acesso', width=180, height=30, command=lambda: acesso.acesso(nvl, janelaMenuAdmin))
     acessobtn.place(relx=0.5, rely=0.33, anchor=tk.CENTER)

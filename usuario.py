@@ -71,7 +71,7 @@ def usuario(nvl, janelaMenu):
     scroll = ck.CTkScrollbar(janelaUsuario, orientation='vertical', command=treeUsuario.yview, height=224)
     scroll.pack(side ='right', fill ='x')
     treeUsuario.configure(yscrollcommand=scroll.set)
-    scroll.place(relx=0.83, rely=0.7, anchor=tk.CENTER)
+    scroll.place(relx=0.836, rely=0.7, anchor=tk.CENTER)
     # Cabeçalho
     treeUsuario.heading('ID', text='ID')
     treeUsuario.heading('Nome de usuário', text='Nome de usuário')
@@ -128,3 +128,42 @@ def usuario(nvl, janelaMenu):
     classcrud.attTreeUsuario(treeUsuario, janelaUsuario)
 
     janelaUsuario.mainloop()
+
+def destruirJanelas(janelaTrocaSenha, janela, janelaMain):
+        janelaMain.deiconify()
+        janela.destroy()
+        janelaTrocaSenha.destroy()
+        
+def trocarSenha(nvl, janela, janelaMain):    
+    # Janela
+    janelaTrocaSenha = ck.CTkToplevel()
+    janelaTrocaSenha.attributes('-topmost', True)
+    x, y = 250, 150
+    posx, posy = int((janelaTrocaSenha.winfo_screenwidth()-x)/2), int((janelaTrocaSenha.winfo_screenheight()-y)/2)
+    janelaTrocaSenha.geometry(f'{x}x{y}+{posx}+{posy}')
+    janelaTrocaSenha.resizable(False, False)
+    janelaTrocaSenha.after(200, lambda: janelaTrocaSenha.iconbitmap('icon.ico'))
+    janelaTrocaSenha.title('Trocar Senha')
+    janela.protocol("WM_DELETE_WINDOW", lambda: destruirJanelas(janelaTrocaSenha, janela, janelaMain))
+
+    # Entry - Senha Atual
+    labelSenhaAtual = ck.CTkLabel(janelaTrocaSenha, text='Senha Atual')
+    labelSenhaAtual.place(relx=0.05, rely=0.20, anchor=tk.W)
+    senhaAtual = ck.CTkEntry(janelaTrocaSenha, show='*')
+    senhaAtual.place(relx=0.95, rely=0.20, anchor=tk.E)
+
+    # Entry - Nova Senha
+    labelNovaSenha = ck.CTkLabel(janelaTrocaSenha, text='Nova Senha')
+    labelNovaSenha.place(relx=0.05, rely=0.50, anchor=tk.W)
+    novaSenha = ck.CTkEntry(janelaTrocaSenha, show='*')
+    novaSenha.place(relx=0.95, rely=0.50, anchor=tk.E)
+
+    # Button - Confirmar
+    btnConfirmar = ck.CTkButton(janelaTrocaSenha, width=50, text='Confirmar', command=lambda: classcrud.trocarSenha(nvl, senhaAtual, novaSenha, janelaTrocaSenha))
+    btnConfirmar.place(relx=0.5, rely=0.80, anchor=tk.CENTER)
+
+    # Button - Sair Janela anterior
+    sairbtn = ck.CTkButton(janela, width=50, text='Sair', command=lambda: destruirJanelas(janelaTrocaSenha, janela, janelaMain))
+    sairbtn.place(relx=0.05, rely=0.05, anchor=tk.CENTER)
+
+    janelaTrocaSenha.mainloop()

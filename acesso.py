@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 import customtkinter as ck
 import classcrud
+import usuario
 
 def voltar(janelaAcesso, janela):
     janela.deiconify()
@@ -24,6 +25,11 @@ def acesso(nvl, janela):
 
     # Usuário
     ck.CTkLabel(janelaAcesso, text=nvl[0], font=ck.CTkFont(size=15)).place(relx=0.92, rely=0.05, anchor=tk.CENTER)
+
+    # Usuário - Trocar senha
+    if nvl[2] == 'Não':
+        btnTrocarSenha = ck.CTkButton(janelaAcesso, text='Trocar senha', font=ck.CTkFont(size=11, underline=True), fg_color='transparent', hover_color='#242424', width=45, height=8, command=lambda: usuario.trocarSenha(nvl, janelaAcesso, janela))
+        btnTrocarSenha.place(relx=0.92, rely=0.095, anchor=tk.CENTER)
 
     # Entry - ID Funcionário
     labelFunc = ck.CTkLabel(janelaAcesso, text='ID do funcionário')

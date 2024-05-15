@@ -809,32 +809,51 @@ def updateUsuario(IDUsuario, nomeUsuario, senhaUsuario, switchAdmin, treeUsuario
             if selectNomeUsuID != nomeUsuario.get():
                 CTkMessagebox(title='Erro', icon='cancel', message='Usuário já registrado\nTente outro nome')
                 return
-        # Verificação senha vazia
+
+        # Senha vazia não altera a senha
         if senhaUsuario.get() == '':
-            CTkMessagebox(title='Erro', icon='cancel', message='Senha inválida')
-            return
+            # Instância da classe Usuário
+            usuario = Usuario()
+            usuario.IDUsuario = IDUsuario.get()
+            usuario.nomeUsuario = nomeUsuario.get()
+            usuario.usuAdmin = switchAdmin.get()
+            # Update - Usuário
+            comando = '''UPDATE Usuario
+                            SET nome_usuario = (?), admin = (?)
+                            WHERE usuario_ID = (?);'''
+            cursor.execute(comando, (usuario.nomeUsuario, usuario.usuAdmin, usuario.IDUsuario))
+            # Messagebox - Confirmação
+            msg = CTkMessagebox(title='Confirmação', message='Confirmar Atualização?', icon='question', option_1='Não', option_3='Sim')
+            resposta = msg.get()
+            if resposta=='Sim':
+                conexao.commit()
+            else:
+                conexao.rollback()
 
-        # Hash na senha
-        senhaHash = hashlib.sha256(senhaUsuario.get().encode()).hexdigest()
-
-        # Instância da classe Usuário
-        usuario = Usuario()
-        usuario.IDUsuario = IDUsuario.get()
-        usuario.nomeUsuario = nomeUsuario.get()
-        usuario.senhaUsuario = senhaHash
-        usuario.usuAdmin = switchAdmin.get()
-        # Update - Usuário
-        comando = '''UPDATE Usuario
-                        SET nome_usuario = (?), senha = (?), admin = (?)
-                        WHERE usuario_ID = (?);'''
-        cursor.execute(comando, (usuario.nomeUsuario, usuario.senhaUsuario, usuario.usuAdmin, usuario.IDUsuario))
-        # Messagebox - Confirmação
-        msg = CTkMessagebox(title='Confirmação', message='Confirmar Atualização?', icon='question', option_1='Não', option_3='Sim')
-        resposta = msg.get()
-        if resposta=='Sim':
-            conexao.commit()
+        # Senha não vazia altera a senha
         else:
-            conexao.rollback()
+            # Hash na senha
+            senhaHash = hashlib.sha256(senhaUsuario.get().encode()).hexdigest()
+
+            # Instância da classe Usuário
+            usuario = Usuario()
+            usuario.IDUsuario = IDUsuario.get()
+            usuario.nomeUsuario = nomeUsuario.get()
+            usuario.senhaUsuario = senhaHash
+            usuario.usuAdmin = switchAdmin.get()
+            # Update - Usuário
+            comando = '''UPDATE Usuario
+                            SET nome_usuario = (?), senha = (?), admin = (?)
+                            WHERE usuario_ID = (?);'''
+            cursor.execute(comando, (usuario.nomeUsuario, usuario.senhaUsuario, usuario.usuAdmin, usuario.IDUsuario))
+            # Messagebox - Confirmação
+            msg = CTkMessagebox(title='Confirmação', message='Confirmar Atualização?', icon='question', option_1='Não', option_3='Sim')
+            resposta = msg.get()
+            if resposta=='Sim':
+                conexao.commit()
+            else:
+                conexao.rollback()
+                
     except conector.Error as erro:
         CTkMessagebox(title='Erro', icon='cancel', message=f'Erro ao atualizar os dados: {erro}')
     finally:
@@ -1092,6 +1111,53 @@ def entrar(lgnUsuario, lgnSenha, janelaMain):   # Login
             conexao, cursor = fecharConexao(conexao, cursor)
 
 #--------------------------------------------------------------------------
+# Usuário troca a senha
+#--------------------------------------------------------------------------
+def verificarSenhaAtual(nvl, cursor):    # Verifica Senha Atual
+    cursor.execute('SELECT senha FROM usuario WHERE nome_usuario = ?', (nvl[0], ))
+    selectSenhaAtual = cursor.fetchone()[0]
+    return selectSenhaAtual
+
+def trocarSenha(nvl, entrySenhaAtual, entryNovaSenha, janelaTrocaSenha):
+    try:
+        conexao, cursor = abrirConexao()
+        
+        senhaAtual = verificarSenhaAtual(nvl, cursor)
+        entrySenhaAtual = hashlib.sha256(entrySenhaAtual.get().encode()).hexdigest()
+        if entrySenhaAtual != senhaAtual:
+            CTkMessagebox(title='Erro', icon='cancel', message='Senha atual inválida')
+            return
+        if entryNovaSenha.get() == '':
+            CTkMessagebox(title='Erro', icon='cancel', message='Nova senha inválida')
+            return
+
+        entryNovaSenha = hashlib.sha256(entryNovaSenha.get().encode()).hexdigest()
+
+        # Instância da classe Usuário
+        usuario = Usuario()
+        usuario.nomeUsuario = nvl[0]
+        usuario.senhaUsuario = entryNovaSenha
+        # Update - Usuário
+        comando = '''UPDATE Usuario
+                        SET senha = (?)
+                        WHERE nome_usuario = (?);'''
+        cursor.execute(comando, (usuario.senhaUsuario ,usuario.nomeUsuario))
+        # Messagebox - Confirmação
+        msg = CTkMessagebox(title='Confirmação', message='Confirmar Alteração?', icon='question', option_1='Não', option_3='Sim')
+        resposta = msg.get()
+        if resposta=='Sim':
+            conexao.commit()
+            CTkMessagebox(title='Senha Alterada', icon='check', message='Senha alterada com sucesso')
+            janelaTrocaSenha.destroy()
+        else:
+            conexao.rollback()
+    except conector.Error as erro:
+        CTkMessagebox(title='Erro', icon='cancel', message=f'Erro ao alterar a senha: {erro}')
+    finally:
+        if (conexao):
+            conexao, cursor = fecharConexao(conexao, cursor)
+
+#--------------------------------------------------------------------------
 # Tabelas
 #--------------------------------------------------------------------------
 def tabelas():  # Criação das tabelas (caso não exista)
@@ -1179,7 +1245,7 @@ def tabelas():  # Criação das tabelas (caso não exista)
             senhaAdmin = 'admin'
             senhaHash = hashlib.sha256(senhaAdmin.encode()).hexdigest()
             comando = '''INSERT INTO Usuario (nome_usuario, senha, funcionario_ID, admin) 
-                        VALUES ('admin', ?, 1, 'Sim');'''
+                            VALUES ('admin', ?, 1, 'Sim');'''
             cursor.execute(comando, (senhaHash, ))
             
             conexao.commit()
