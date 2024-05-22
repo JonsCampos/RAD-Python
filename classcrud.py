@@ -9,9 +9,9 @@ import acesso
 # Classes
 #--------------------------------------------------------------------------
 class Acesso:
-    def __init__(self, IDFunc, idLocal, tipo):
+    def __init__(self, IDFunc, IDLocal, tipo):
         self.__IDFunc = IDFunc
-        self.__idLocal = idLocal
+        self.__IDLocal = IDLocal
         self.__tipo = tipo
     
     @property
@@ -19,8 +19,8 @@ class Acesso:
         return self.__IDFunc
 
     @property
-    def idLocal(self):
-        return self.__idLocal
+    def IDLocal(self):
+        return self.__IDLocal
 
     @property
     def tipo(self):
@@ -182,7 +182,7 @@ class Login:
 #--------------------------------------------------------------------------
 def abrirConexao():
     try:
-        conexao = conector.connect('./db_controle_acesso.db') 
+        conexao = conector.connect('Banco/db_controle_acesso.db')
         cursor = conexao.cursor()
     except conector.Error as erro:
         CTkMessagebox(title='Erro', icon='cancel', message=f'Erro ao conectar-se com o banco de dados: {erro}')
@@ -283,7 +283,7 @@ def insertAcesso(IDFunc, local, registros, tipo, treeAcessos, janelaAcesso):   #
         # Insert - Acesso
         comando = '''INSERT INTO acesso (funcionario_ID, local_ID, tipo) 
                         VALUES (?, ?, ?);'''
-        cursor.execute(comando, (acesso.IDFunc, acesso.idLocal, acesso.tipo))
+        cursor.execute(comando, (acesso.IDFunc, acesso.IDLocal, acesso.tipo))
         # Messagebox - Confirmação
         msg = CTkMessagebox(title='Confirmação', message='Confirmar acesso?', icon='question', option_1='Não', option_3='Sim')
         resposta = msg.get()
