@@ -67,8 +67,8 @@ def local(nvl, janelaMenu):
 
         for selecao in treeLocal.selection():  
             item = treeLocal.item(selecao)  
-            idlocal, nomelocal = item["values"][0:2]  
-            IDLocal.insert(0, idlocal)  
+            IDlocal, nomelocal = item["values"][0:2]  
+            IDLocal.insert(0, IDlocal)  
             nomeLocal.insert(0, nomelocal)
 
     treeLocal.bind("<<TreeviewSelect>>", selecionarRegistros)
